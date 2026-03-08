@@ -24,9 +24,7 @@ Please, fill the following sections about your project.
 
 ### Problematic
 
-> Frame the general topic of your visualization and the main axis that you want to develop.
-> - What am I trying to show with my visualization?
-> - Think of an overview for the project, your motivation, and the target audience.
+Through various data visualizations, we aim to demonstrate the safety of air travel and the variable risks associated with specific criteria such as routes, airlines, and aircraft types. This presentation also aims to compare statistical results across different actors in the aviation industry. We want to provide visitors with insightful analyses on the reliability of companies involved in air travel.
 
 ### Exploratory Data Analysis
 
