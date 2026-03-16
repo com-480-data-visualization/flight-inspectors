@@ -2,8 +2,8 @@
 
 | Student's name | SCIPER |
 | -------------- | ------ |
-| Nicolas Karmo | |
-| Roméo Maignl | 360568 |
+| Nicolas Karmolinski | 316655 |
+| Roméo Maignal | 360568 |
 | Jakub Kielar | |
 
 
@@ -18,9 +18,9 @@ Please, fill the following sections about your project.
 
 ### Dataset
 
-> Find a dataset (or multiple) that you will explore. Assess the quality of the data it contains and how much preprocessing / data-cleaning it will require before tackling visualization. We recommend using a standard dataset as this course is not about scraping nor data processing.
->
-> Hint: some good pointers for finding quality publicly available datasets ([Google dataset search](https://datasetsearch.research.google.com/), [Kaggle](https://www.kaggle.com/datasets), [OpenSwissData](https://opendata.swiss/en/), [SNAP](https://snap.stanford.edu/data/) and [FiveThirtyEight](https://data.fivethirtyeight.com/)).
+The primary dataset we will be working on is a dataset of plane crashes from 1908 to 2024 found on [Kaggle](https://www.kaggle.com/datasets/luiscfrancisco/plane-crashes-dataset/data). This was the most up-to-date dataset we could find that contains relatively complete information on crucial details for our analyses: route, operator and aircraft type. The dataset contains information of every kind of flight possible, thus will require some processing to only keep commercial flights, which is our project's main point of interest. Some slight cleaning might be necessary. The dataset contains many columns, including a couple that we will likely not need, like fuselage number of flight number, the latter of which is quite incomplete. The route column may need to be split into two departure and arrival columns.
+
+As a complement, we will be using the airports, routes, and airlines datasets from [OpenFlights](https://openflights.org/data), a free, high-quality and comprehensive aviation database. In conjugtion with our primary dataset, we will be able to relate the plane crashes to geographical locations, priming us for apt visualizations.
 
 ### Problematic
 
