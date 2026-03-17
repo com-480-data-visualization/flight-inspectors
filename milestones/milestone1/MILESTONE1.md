@@ -28,8 +28,9 @@ Through various data visualizations, we aim to demonstrate the safety of air tra
 
 ### Exploratory Data Analysis
 
-> Pre-processing of the data set you chose
-> - Show some basic statistics and get insights about the data
+There are countless statistics to apply to our datasets and endless insights to draw from their analysis. For our final exposition, we aim to address our research question using sophisticated metrics. In the meantime, the following plots explore several fields within our datasets.
+
+![Accident-per-year](../../plots/accidents_per_year.svg)
 
 ### Related work
 
@@ -38,4 +39,3 @@ Through various data visualizations, we aim to demonstrate the safety of air tra
 > - Why is your approach original?
 > - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
 > - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
-
