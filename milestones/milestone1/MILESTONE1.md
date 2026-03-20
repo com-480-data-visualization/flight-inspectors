@@ -4,7 +4,7 @@
 | -------------- | ------ |
 | Nicolas Karmolinski | 316655 |
 | Roméo Maignal | 360568 |
-| Jakub Kielar | |
+| Jakub Kielar | 423372|
 
 
 ## Milestone 1 (20th March, 5pm)
@@ -34,16 +34,12 @@ _Unsure: There are countless statistics to apply to our datasets and endless ins
 
 ### Related work
 
-The database we used is technically not widely described yet by researchers. However, similar dataset, closely related to the dataset we used, has been videly investigated and described. The reason we didn’t choose this dataset is the fact that it finishes at year 2009, which makes it a little outdated. This dataset was investigated and visualized by Ruslan Klymentiev - Airplane Crashes [Data Visualization] [https://www.kaggle.com/code/ruslankl/airplane-crashes-data-visualization] presenting many important information with plots and classification graphs. He investigated the fatalities, differences between military and civil flights, the reliability of operators and many other factors. 
-Further investigation of the dataset was found on kaggle platform [https://www.kaggle.com/code/garydee/who-not-to-fly-with] that focus on the accidents and fatalities connected to flight operators. It aims to present reliability of each operator throughout the history.
+The database we used is technically not yet widely described by researchers. However, similar dataset, closely related to the dataset we used, has been videly investigated and described. The reason we didn’t choose this dataset is the fact that is records finish at year 2009, which makes the dataset a little outdated to use in modern solutions. This dataset was investigated and visualized by Ruslan Klymentiev - [Airplane Crashes Data Visualization](https://www.kaggle.com/code/ruslankl/airplane-crashes-data-visualization) presenting many important information with plots and classification graphs. He investigated the fatalities, differences between military and civil flights statistics, the reliability of operators and many other factors. 
+Further investigation of the dataset was found on kaggle platform [Who not to fly with](https://www.kaggle.com/code/garydee/who-not-to-fly-with) that focuses on the accidents and fatalities connected to flight operators. It aims to present reliability of each operator throughout the history.
 
-Another article [https://www.kaggle.com/code/imdevskp/exploring-historic-air-plane-crash-data] presents crash analytics for models of planes, manufacturers, crash locations and even comparison between early and late hours of flights.
+Another [article](https://www.kaggle.com/code/imdevskp/exploring-historic-air-plane-crash-data) presents crash analytics for models of planes, manufacturers, crash locations and even comparison between early and late hours of the day.
 
-Our approach is original as we aim to discover the chosen flight crashes dataset further, and connect the data with dataset of flights, routes and airlines, creating combined set of data, which is more meaningful for visualizations and alaysis. We aim to present interactive map of the world with routes of flights and places of crashes. We didn’t encounter such combination of data and presentation method during our research of related works, therefore we decided to pick this problematic as we found it very unique.
-One of our inspiration for presenting this data as a map was the OpenFlights website were we found their map of flight connections. However, we wanted to go a bit further and make the map interactive, where user can interact and pick single connection between airports and see the crashes of that very route.
+Our approach is original as we aim to discover the chosen flight crashes dataset further and connect the data with dataset of flights, routes and airlines, creating combined set of data. This set would be more meaningful for visualizations and detailed analysis. We aim to present interactive map of the world with routes of flights and places of crashes. We didn’t encounter such combination of data and presentation method during our research of related works, therefore we decided to pick this problematic as we found it very unique.
 
+One of the first inspirations for our work and presenting the routes of given flights was the widely known [FlightRadar](https://www.flightradar24.com/), were the flight can be traced by its unique flight number. The inspiration for presenting data as a map was also the previously mentioned [OpenFlights](https://openflights.org/data) website where we found their map of flight connections, however in a very static manner. However, we wanted to go a bit further and make the map interactive, where user can interact and pick single connection between airports and see the crashes of that very route. Then we approached the [FlightConnections](https://www.flightconnections.com/) website, which presented the data in much more organised and interactive way, where user could pick starting point to see the possible route choices. We wanted to follow such approach, however with presentation of additional data about the crashes, combination that we didn’t encounter during our investigation.
 
-> - What others have already done with the data?
-> - Why is your approach original?
-> - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
-> - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
