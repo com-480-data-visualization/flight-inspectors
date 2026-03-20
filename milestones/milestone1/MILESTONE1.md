@@ -34,6 +34,14 @@ _Unsure: There are countless statistics to apply to our datasets and endless ins
 
 ### Related work
 
+The database we used is technically not widely described yet by researchers. However, similar dataset, closely related to the dataset we used, has been videly investigated and described. The reason we didn’t choose this dataset is the fact that it finishes at year 2009, which makes it a little outdated. This dataset was investigated and visualized by Ruslan Klymentiev - Airplane Crashes [Data Visualization] [https://www.kaggle.com/code/ruslankl/airplane-crashes-data-visualization] presenting many important information with plots and classification graphs. He investigated the fatalities, differences between military and civil flights, the reliability of operators and many other factors. 
+Further investigation of the dataset was found on kaggle platform [https://www.kaggle.com/code/garydee/who-not-to-fly-with] that focus on the accidents and fatalities connected to flight operators. It aims to present reliability of each operator throughout the history.
+
+Another article [https://www.kaggle.com/code/imdevskp/exploring-historic-air-plane-crash-data] presents crash analytics for models of planes, manufacturers, crash locations and even comparison between early and late hours of flights.
+
+Our approach is original as we aim to discover the chosen flight crashes dataset further, and connect the data with dataset of flights, routes and airlines, creating combined set of data, which is more meaningful for visualizations and alaysis. We aim to present interactive map of the world with routes of flights and places of crashes. We didn’t encounter such combination of data and presentation method during our research of related works, therefore we decided to pick this problematic as we found it very unique.
+One of our inspiration for presenting this data as a map was the OpenFlights website were we found their map of flight connections. However, we wanted to go a bit further and make the map interactive, where user can interact and pick single connection between airports and see the crashes of that very route.
+
 
 > - What others have already done with the data?
 > - Why is your approach original?
