@@ -30,7 +30,8 @@ Through various data visualizations, we aim to demonstrate the safety of air tra
 
 Some basic cleaning and preprocessing to the crashes dataset is done in [preprocessing.ipynb](../../preprocessing.ipynb). The main operations aim to simplify the dataset by dropping unnecessary columns from the original and formatting columns such that we can relate them back to the OpenFlights datasets. Regarding the latter, as they are high quality, no preprocessing was deemed to be required.
 
-_Unsure: There are countless statistics to apply to our datasets and endless insights to draw from their analysis._ For our final exposition, we aim to address our research question using sophisticated metrics. In the meantime, [preliminary_analysis.ipynb](../../preliminary_analysis.ipynb) aims to explore several fields within our datasets for a better understanding of what we will be working with.
+For our final exposition, we aim to address our research objectives through advanced statistics and provide an insighful interpretation of our results. In the meantime, in order to give a preliminary overview of our project, we explore a few fields within our datasets in the following notebook: [preliminary_analysis.ipynb](../../preliminary_analysis.ipynb) .
+
 
 ### Related work
 
