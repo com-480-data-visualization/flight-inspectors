@@ -1,6 +1,6 @@
-import './viz3.css'
+import './Viz3.css'
 
-const viz3: React.FC = () => {
+const Viz3: React.FC = () => {
     return (
         <div>
 
@@ -8,4 +8,4 @@ const viz3: React.FC = () => {
     )
 }
 
-export default viz3
+export default Viz3
