@@ -1,6 +1,7 @@
 .abstract-container {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
   height: 50vh;
   padding: 32px 20px;

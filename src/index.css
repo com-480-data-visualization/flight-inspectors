@@ -50,6 +50,12 @@
   }
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 #root {
   /* width: 1126px;
   max-width: 100%;
@@ -93,6 +99,7 @@ h2 {
 }
 p {
   margin: 0;
+  text-align: justify;
 }
 
 code,
