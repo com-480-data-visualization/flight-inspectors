@@ -1,0 +1,16 @@
+.abstract-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 32px 20px;
+}
+
+.abstract {
+  max-width: 900px;
+  text-align: left;
+}
+
+.abstract p {
+  margin-left: auto;
+  margin-right: auto;
+}
