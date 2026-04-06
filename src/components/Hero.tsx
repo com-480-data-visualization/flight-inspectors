@@ -2,7 +2,7 @@ import './Hero.css'
 
 const Hero: React.FC = () => {
   return (
-    <div></div>
+    <div id='hero'></div>
   )
 }
 export default Hero

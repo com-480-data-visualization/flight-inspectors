@@ -2,7 +2,7 @@ import './Viz3.css'
 
 const Viz3: React.FC = () => {
     return (
-        <div>
+        <div id='section3' className='section'>
 
         </div>
     )

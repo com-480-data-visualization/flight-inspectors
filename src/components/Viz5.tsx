@@ -2,7 +2,7 @@ import './Viz5.css'
 
 const Viz5: React.FC = () => {
     return (
-        <div>
+        <div className='section'>
 
         </div>
     )

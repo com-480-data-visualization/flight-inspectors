@@ -1,0 +1,25 @@
+.section {
+	height: 100vh;
+	border: 1px solid #d1d5db;
+}
+
+footer {
+	height: 5%;
+}
+
+.site-footer {
+	min-height: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.75rem 1rem;
+	border-top: 1px solid #e5e7eb;
+	color: white;
+	font-size: 0.875rem;
+	background-color: #282523;
+	text-align: center;
+}
+
+.site-footer p {
+	margin: 0;
+}

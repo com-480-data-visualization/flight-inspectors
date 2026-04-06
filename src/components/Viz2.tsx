@@ -2,7 +2,7 @@ import './Viz2.css'
 
 const Viz2: React.FC = () => {
     return (
-        <div>
+        <div id='section2' className='section'>
 
         </div>
     )
