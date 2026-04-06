@@ -48,6 +48,10 @@ function App() {
       <section id='about-section'>
         <About />
       </section>
+
+      <footer className="site-footer">
+        <p>Flight Inspectors • COM-480 Data Visualization Project</p>
+      </footer>
     </>
   );
 }
