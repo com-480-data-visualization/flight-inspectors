@@ -1,5 +1,5 @@
 .section {
-	height: 66.67vh;
+	height: 100vh;
 	border: 1px solid #d1d5db;
 }
 
@@ -8,7 +8,7 @@ footer {
 }
 
 .site-footer {
-	min-height: 56px;
+	min-height: 100px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -16,7 +16,7 @@ footer {
 	border-top: 1px solid #e5e7eb;
 	color: white;
 	font-size: 0.875rem;
-	background-color: black;
+	background-color: #282523;
 	text-align: center;
 }
 

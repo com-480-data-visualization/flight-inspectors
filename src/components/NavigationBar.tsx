@@ -57,7 +57,7 @@ const NavigationBar: React.FC = () => {
       <div className="navbar-container">
         <a href="#hero-section" className="navbar-logo" onClick={closeMenu}>
           <span className="navbar-brand">
-            FLIGHT INSPECTORS <span className="brand-year">2026</span>
+            FLIGHT INSPECTORS 
           </span>
         </a>
 
