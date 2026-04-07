@@ -2,11 +2,12 @@
     background-color: #2b2927;
 }
 
-#section1 h2, #section1 p{
+#section1 h1, #section1 p{
     color: white;
 }
 
-#section1 .widget h2 {
+
+#section1 .widget h1 {
     color: black;
 }
 

@@ -108,7 +108,7 @@
     transition: all 0.3s ease;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .navbar {
         padding: 0.9rem 0;
     }
@@ -160,4 +160,4 @@
         transform: none;
         width: 28px;
     }
-}
+} */
