@@ -17,7 +17,7 @@ For this visualization, we will make use of the *10_Graphs*, *5_1_Interaction* a
 
 ### Website prototype
 The initial implementation of our website with the basic skeleton of the visualization/widgets is running live at the following url :
-[https://com-480-data-visualization.github.io/flight-inspectors/]()
+[https://com-480-data-visualization.github.io/flight-inspectors/](https://com-480-data-visualization.github.io/flight-inspectors/)
 
 Our site is built with the following tools :
  - [Vite](https://vite.dev/) as our local development server
