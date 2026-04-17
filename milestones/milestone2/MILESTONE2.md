@@ -17,7 +17,7 @@ The skeleton of our core visualization can be found at the end of the page.
 
 #### Sketch 1: Biggest actors involved in plane crashes
 
-This bubble plot will display the amount of crashes for a given, aircraft, airline, destination, etc, across the years, thanks to a dropdown for the category and a slider for the year. The size shall be scaled with the number of incidents, highlighting the riskiest variables.
+This bubble plot will display the number of crashes for a given aircraft, airline, destination, etc, across the years, using a dropdown for the category and a slider for the year. The size shall be scaled with the number of incidents, highlighting the riskiest variables.
 
 <img src="top_actor_visualization.png" width="600" height="auto">
 
@@ -33,7 +33,7 @@ For this visualization, we will make use of the *5_1_Interaction*, *10_Graphs* a
 
 #### Sketch 3: Heat- and tree-maps of plane crash locations
 
-With the heatmap, we can geographically represent where most crashes happen, allowing the user to take that into consideration when planning a flight route. The tree map would help establish a clearer sense of scale of this information. Through the percentage of crashes per country and per continent as we include both of these division granulities, the visualization shows the relative distribution of crashes, easily visually comparable by the rectangle size.
+With the heatmap, we can geographically represent where most crashes happen, allowing the user to take that into consideration when planning a flight route. The treemap would help establish a clearer sense of scale for this information. By showing the percentage of crashes per country and per continent (as we include both levels of granularity), the visualization highlights the relative distribution of crashes, which can be easily compared visually through rectangle size.
 
 <img src = "crash_locations_visualization.jpg" width="600" height="auto">
 
@@ -41,7 +41,7 @@ For this visualization, we will make use of the *5_1_Interaction*, *8_1_Maps*, *
 
 #### Sketch 4: Globe displaying flight routes where planes have crashed
 
-Visualizaing a globe enables us to have more realistic perception of flight routes, to see over which countries the flight route leads, which would be hard to represent on mercator map. The slider below the globe enables the user to select specific periods of time that they are interested in representing on the globe.
+Visualizing a globe enables us to have more realistic perception of flight routes, to see over which countries the flight route leads, which would be hard to represent on mercator map. The slider below the globe enables the user to select specific periods of time that they are interested in representing on the globe.
 
 <img src = "globe_visualization.jpg" width="600" height="auto">
 
@@ -59,7 +59,7 @@ For this visualization, we will make use of the *5_1_Interaction* and *D3.js* le
 
 <img src = "directed_chord_visualization.png" width="600" height="auto">
 
-This visualization would be a directed chord diagram linking the different intended routes of flights that crashed. The idea would be to get an understanding of which cities are most dangerous to fly to or from, as in a densely populated graph like this one, considering we would have around 4000 relations, cities with the most connections should easily stand out. However, this may mean that the visualization would be too cluttered and illegible, thus we might have to resort to classifying cities based on their country or continent, which is doable but potentially slightly irrelevant. Therefore, we may scrap this visualization if we finally deem it to be uninteresting. This will require lectures on graphs and colors and marks.
+This visualization would be a directed chord diagram linking the different intended routes of flights that crashed. The idea would be to get an understanding of which cities are most dangerous to fly to or from, as in a densely populated graph like this one, considering we would have around 4000 relationships, cities with the most connections should easily stand out. However, this may mean that the visualization would be too cluttered and illegible, thus we might have to resort to classifying cities based on their country or continent, which is doable but potentially slightly irrelevant. Therefore, we may scrap this visualization if we finally deem it to be uninteresting. This will require lectures on graphs and colors and marks.
 
 ### Website prototype
 The initial implementation of our website with the basic skeleton of the visualization/widgets is running live at the following url :
@@ -71,4 +71,4 @@ Our site is built with the following tools :
  - [TailwindCSS](https://tailwindcss.com/) as our CSS framework
  - [TypeScript](https://www.typescriptlang.org/) as a type safe alternative to javascript
 
-Note that the background of the Navigation Bar is blurred in the local build of the website. However, on Github Pages the background is not rendered properly for reasons currently being research.
+Note that the background of the Navigation Bar is blurred in the local build of the website. However, on Github Pages the background is not rendered properly for reasons currently being researched.
