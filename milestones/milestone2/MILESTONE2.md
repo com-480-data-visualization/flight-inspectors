@@ -8,12 +8,7 @@
 
 ## Milestone 2 (Friday 1st May, 5pm)
 
-### Early sketches and tools/lectures we will use to implement each of them 
-Comparison of different aviations actors and their correlated incident/accident records :
-
-<img src="comparison_visualization.png"  width="600" height="auto">   
-
-For this visualization, we will make use of the *10_Graphs*, *5_1_Interaction* and *D3.js* lectures along with library of the same name.
+The report for Milestone 2 can be found here: [Milestone2.pdf](Milestone2.pdf)
 
 ### Website prototype
 The initial implementation of our website with the basic skeleton of the visualization/widgets is running live at the following url :
@@ -25,4 +20,4 @@ Our site is built with the following tools :
  - [TailwindCSS](https://tailwindcss.com/) as our CSS framework
  - [TypeScript](https://www.typescriptlang.org/) as a type safe alternative to javascript
 
-Note that the background of the Navigation Bar is blurred in the local build of the website. However, on Github Pages the background is not rendered properly for reasons currently being research.
+Note that the background of the Navigation Bar is blurred in the local build of the website. However, on Github Pages the background is not rendered properly for reasons currently being researched.
