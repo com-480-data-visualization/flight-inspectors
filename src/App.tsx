@@ -19,7 +19,7 @@ function App() {
         <Hero /> {/* Hero designates the visual element that is meant to capture the visitor's attention (e.g. a large text or image taking most of the space on the screen) */}
       </section>
 
-      <section id="indtroduction-section">
+      <section id="introduction-section">
         <Introduction /> {/* Here we present our project, our problematic and our motivations */}
       </section>
 

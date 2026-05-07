@@ -3,7 +3,7 @@ import './Viz5.css'
 const Viz5: React.FC = () => {
     return (
       <div className="section">
-        <div className="viz_container">
+        <div className="viz-container">
           <div className="paragraph">
             <h1 className="viz-title">VIZ 5</h1>
             <p>

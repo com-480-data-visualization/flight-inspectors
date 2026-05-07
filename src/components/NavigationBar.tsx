@@ -3,7 +3,7 @@ import './NavigationBar.css'
 
 const navItems = [
   { id: 'hero-section', label: 'Home' },
-  { id: 'indtroduction-section', label: 'Presentation' },
+  { id: 'introduction-section', label: 'Presentation' },
   { id: 'section1', label: 'Viz1' },
   { id: 'section2', label: 'Viz2' },
   { id: 'section3', label: 'Viz3' },
@@ -57,7 +57,7 @@ const NavigationBar: React.FC = () => {
       <div className="navbar-container">
         <a href="#hero-section" className="navbar-logo" onClick={closeMenu}>
           <span className="navbar-brand">
-            FLIGHT INSPECTORS 
+            FLIGHT INSPECTORS
           </span>
         </a>
 

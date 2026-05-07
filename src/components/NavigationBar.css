@@ -41,11 +41,6 @@
     letter-spacing: 0.08em;
 }
 
-.brand-year {
-    color: #78716c;
-    font-weight: 400;
-}
-
 .navbar-menu {
     display: flex;
     align-items: center;
@@ -108,56 +103,3 @@
     transition: all 0.3s ease;
 }
 
-/* @media (max-width: 768px) {
-    .navbar {
-        padding: 0.9rem 0;
-    }
-
-    .navbar-container {
-        padding: 0 1rem;
-    }
-
-    .navbar-brand {
-        opacity: 1;
-        font-size: 0.9rem;
-    }
-
-    .mobile-menu-button {
-        display: flex;
-        z-index: 101;
-    }
-
-    .navbar-menu {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        width: 260px;
-        flex-direction: column;
-        align-items: flex-start;
-        background-color: rgba(249, 248, 244, 0.96);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 88px 1.5rem 2rem;
-        transition: right 0.3s ease-in-out;
-        z-index: 100;
-        gap: 0.2rem;
-    }
-
-    .navbar-menu.active {
-        right: 0;
-    }
-
-    .navbar-item {
-        margin: 0.25rem 0;
-        width: 100%;
-        border-radius: 10px;
-        padding: 0.6rem 0.8rem;
-    }
-
-    .navbar-item.active::after {
-        left: 0.8rem;
-        transform: none;
-        width: 28px;
-    }
-} */

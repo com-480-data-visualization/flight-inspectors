@@ -2,8 +2,8 @@ import './Viz3.css'
 
 const Viz3: React.FC = () => {
     return (
-      <div id="section3" className="section">
-        <div className="viz_container">
+      <div className="section">
+        <div className="viz-container">
           <div className="paragraph">
             <h1 className="viz-title">VIZ 3</h1>
             <p>

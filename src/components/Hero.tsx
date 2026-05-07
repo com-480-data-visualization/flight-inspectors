@@ -2,8 +2,8 @@ import './Hero.css'
 
 const Hero: React.FC = () => {
   return (
-    <div id='hero'>
-      <div id='hero-container'>
+    <div className="hero-content">
+      <div className="hero-container">
         <h1>
           How safe do you think flying is ?
         </h1>
