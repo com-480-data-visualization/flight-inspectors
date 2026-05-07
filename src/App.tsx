@@ -50,7 +50,7 @@ function App() {
       </section>
 
       <footer className="site-footer">
-        <p>Flight Inspectors • COM-480 Data Visualization Project</p>
+        <p>Flight Inspectors • COM-480 Data Visualization Project • 2026</p>
       </footer>
     </>
   );

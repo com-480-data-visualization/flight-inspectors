@@ -1,6 +1,124 @@
 .about-content {
-    width: 100%;
-    height: 100vh;
-    background-color: #282523;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6rem 2rem;
 }
 
+.about-inner {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+}
+
+.about-heading {
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  margin-bottom: 3rem;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.about-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2.5rem 2rem;
+  background: var(--bg-card);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.about-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-elevated);
+}
+
+.about-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+  /* border: 1px solid rgba(60, 236, 124, 0.3); */
+
+  border: 1px solid rgba(60, 215, 236, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.avatar-placeholder {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.about-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.about-card .h5 {
+  align-items: left;
+  justify-content: left;
+}
+
+.about-contribution {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.about-acknowledgement {
+  color: var(--text);
+  text-align: left;
+  font-size: 0.95rem;
+  margin-top: 2rem;
+}
+
+.about-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  background: transparent;
+  color: var(--text-h);
+  font-weight: 500;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: var(--sans);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+@media (max-width: 768px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

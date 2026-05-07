@@ -2,22 +2,37 @@ import './Introduction.css'
 
 const Introduction: React.FC = () => {
   return (
-    <div className="abstract-container">
-      <div className="abstract">
-        <h1>COM-480 : Data Visualization</h1>
-        <p>
-          No matter how safe air travel might be, it's always difficult to
-          completely shake off the feeling of insecurity of flying.
-          In an attempt to address these concerns, we aim to provide an
-          interactive platform to assess the safety of air travel and the
-          variable risks associated with specific criteria such as routes,
-          airlines, and aircraft types through various visualizations, providing
-          visitors with insightful analyses on the reliability of agents
-          involved in air travel. We also intend to pursue some more in-depth
-          analyses, comparing advanced statistical results across different
-          actors in the aviation industry, like analyzing the frequency of
-          accidents through the lens of a Poisson distribution.
-        </p>
+    <div className="intro-content">
+      <div className="intro-inner">
+        <p className="section-badge">/ Introduction</p>
+        <h2 className="intro-heading">
+          Understanding the real risks of air travel
+        </h2>
+        <div className="intro-grid">
+          <div className="intro-card">
+            <h3 className="card-title">The Problem</h3>
+            <p>
+              No matter how safe air travel might be, it's always difficult to
+              completely shake off the feeling of insecurity when flying.
+            </p>
+          </div>
+          <div className="intro-card">
+            <h3 className="card-title">Our Approach</h3>
+            <p>
+              We provide an interactive platform to assess air travel safety
+              through various visualizations — routes, airlines, aircraft types,
+              and advanced statistical analyses.
+            </p>
+          </div>
+          <div className="intro-card">
+            <h3 className="card-title">The Dataset</h3>
+            <p>
+              Leveraging decades of aviation data, we analyze accident
+              frequencies, survival rates, and risk factors across different
+              carriers and regions.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

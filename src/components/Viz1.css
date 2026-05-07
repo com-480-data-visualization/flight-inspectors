@@ -1,13 +1,9 @@
 #section1 {
-    background-color: #2b2927;
+    background: var(--bg);
 }
 
-#section1 h1, #section1 p{
-    color: white;
+#section1 .widget h2 {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
 }
-
-
-#section1 .widget h1 {
-    color: black;
-}
-

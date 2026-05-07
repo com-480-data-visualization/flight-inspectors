@@ -1,139 +1,147 @@
+.app {
+  background: var(--bg);
+  min-height: 100svh;
+}
+
 .section {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #d1d5db;
+  padding: 6rem 2rem;
+  position: relative;
+}
+
+.section-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .viz-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr 1fr;
   align-items: center;
-  justify-items: center;
-  gap: 2rem;
+  gap: 3rem;
+  position: relative;
 }
 
 .viz-container .paragraph {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  align-items: stretch;
+  gap: 1rem;
+  text-align: left;
+  align-items: flex-start;
+}
+
+.viz-container .paragraph .section-badge {
+  font-size: 0.75rem; 
+  margin-bottom: 0.25rem;
   justify-content: flex-start;
-  text-align: center;
-  min-height: 100%;
 }
 
 .viz-container .paragraph p {
-  margin-block: auto;
-  max-width: 60ch;
-}
-
-.viz-container .paragraph h1 {
-  margin-bottom: 1rem;
-  text-align: left;
-  margin: 0;
-  align-self: flex-start;
-  width: 100%;
-}
-
-.viz-container .widget {
-  justify-self: center;
-}
-
-footer {
-  height: 5%;
+  max-width: 55ch;
+  font-size: 0.95rem;
+  line-height: 1.8;
 }
 
 .widget {
-  border: 1px solid #000;   /* width + style + color */
-  border-radius: 10px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
   position: relative;
   width: 100%;
-  max-width: 500px;
-  height: 500px;
-  box-sizing: border-box;
-  background-color: white;
-  border-radius: 20px;
+  max-width: 520px;
+  height: 480px;
+  background: var(--bg-card);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-color 0.3s ease;
 }
 
-.interactive-svg {
-  width: 80%;
-  transition: transform 0.3s ease;
+/* center each grid child within its half */
+.viz-container > .paragraph,
+.viz-container > .widget {
+  justify-self: center;
 }
 
-.hover-circle {
-  fill: #3498db;
-  cursor: pointer;
-  transition: fill 0.3s ease;
+/* vertical divider between the two halves */
+.viz-container::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
-.hover-circle:hover {
-  fill: #e74c3c;
+.widget:hover {
+  border-color: var(--border-hover);
 }
 
 .fullscreen-btn {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  background: white;
-  border: none;
-  border-radius: 50%;
-  padding: 8px;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px;
   cursor: pointer;
   display: flex;
+  color: var(--text);
+  transition: all 0.2s;
+  z-index: 2;
 }
 
-.section .viz-title {
-    position: relative;
-    display: inline-block;
-    width: fit-content;
-    padding-bottom: 1.1rem;
+.fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-h);
 }
 
-.section .viz-title::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 4px;
-    background-color: #b08a3f;
-    border-radius: 0;
+.viz-title {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  margin-bottom: 0.5rem;
 }
 
 .site-footer {
-  min-height: 100px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid #d1d5db;
-  color: white;
-  font-size: 0.875rem;
-  background-color: #282523;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.8rem;
   text-align: center;
 }
 
 .site-footer p {
   margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 @media (max-width: 1024px) {
+  .section {
+    padding: 4rem 1.5rem;
+  }
+
   .viz-container {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
 
   .widget {
     max-width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
+    height: 360px;
   }
 }

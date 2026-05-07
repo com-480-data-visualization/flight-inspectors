@@ -3,13 +3,13 @@ import './NavigationBar.css'
 
 const navItems = [
   { id: 'hero-section', label: 'Home' },
-  { id: 'introduction-section', label: 'Presentation' },
-  { id: 'section1', label: 'Viz1' },
-  { id: 'section2', label: 'Viz2' },
-  { id: 'section3', label: 'Viz3' },
-  { id: 'section4', label: 'Viz4' },
-  { id: 'section5', label: 'Viz5' },
-  { id: 'about-section', label: 'About' },
+  { id: 'introduction-section', label: 'Introduction' },
+  { id: 'section1', label: 'Viz 1' },
+  { id: 'section2', label: 'Viz 2' },
+  { id: 'section3', label: 'Viz 3' },
+  { id: 'section4', label: 'Viz 4' },
+  { id: 'section5', label: 'Viz 5' },
+  { id: 'about-section', label: 'Team' },
 ]
 
 const NavigationBar: React.FC = () => {
