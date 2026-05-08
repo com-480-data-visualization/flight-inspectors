@@ -29,10 +29,10 @@ TODO
 
 ## Stack
 - Scripting language: [TypeScript](https://www.typescriptlang.org/)
-- UI/UX framework: [React](https://react.dev/) 
-- Build tool: [Vite](https://vite.dev/) 
-- Runtime environment: [Node.js](https://nodejs.org/en) 
-- Package manager: [NPM](https://docs.npmjs.com/) 
+- UI/UX framework: [React](https://react.dev/)
+- Build tool & development server: [Vite](https://vite.dev/)
+- Runtime environment: [Node.js](https://nodejs.org/en)
+- Package manager: [NPM](https://docs.npmjs.com/)
 
 <div inline style="display: flex; gap: 1rem; margin-top: 1rem;" bb>
 <img width="50" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" alt="TypeScript" title="TypeScript"/>
