@@ -6,6 +6,7 @@ import Viz2 from './components/Viz2'
 import Viz3 from './components/Viz3'
 import Viz4 from './components/Viz4'
 import Viz5 from './components/Viz5'
+import Viz6 from './components/Viz6'
 import About from './components/About'
 
 import './App.css'
@@ -42,6 +43,10 @@ function App() {
 
       <section id="section5">
         <Viz5 />
+      </section>
+
+      <section id="section6">
+        <Viz6 />
       </section>
 
       {/* Small presentation of the team, aknowledgement, ... */}

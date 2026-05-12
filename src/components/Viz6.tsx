@@ -1,19 +1,9 @@
-import './Viz1.css'
+import './Viz6.css'
 
-const Viz1: React.FC = () => {
+const Viz6: React.FC = () => {
     return (
       <div className="section">
         <div className="viz-container">
-          <div className="paragraph">
-            <p className="section-badge">/ Visualization 01</p>
-            <h1 className="viz-title">Name of visualization</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </p>
-          </div>
           <div className="widget">
             <button className="fullscreen-btn" aria-label="Toggle Fullscreen">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
@@ -24,9 +14,19 @@ const Viz1: React.FC = () => {
               viz will go here
             </h2>
           </div>
+          <div className="paragraph">
+            <p className="section-badge">/ Visualization 06</p>
+            <h1 className="viz-title">Name of visualization</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco laboris
+              nisi ut aliquip ex ea commodo consequat.
+            </p>
+          </div>
         </div>
       </div>
     );
 }
 
-export default Viz1
+export default Viz6

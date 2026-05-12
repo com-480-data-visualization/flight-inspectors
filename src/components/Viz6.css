@@ -1,0 +1,9 @@
+#section6 {
+    background: var(--bg);
+}
+
+#section6 .widget h2 {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+}

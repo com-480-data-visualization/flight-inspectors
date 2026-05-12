@@ -16,7 +16,7 @@ const Viz2: React.FC = () => {
           </div>
           <div className="paragraph">
             <p className="section-badge">/ Visualization 02</p>
-            <h1 className="viz-title">Airline Safety Rankings</h1>
+            <h1 className="viz-title">Name of visualization</h1>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut

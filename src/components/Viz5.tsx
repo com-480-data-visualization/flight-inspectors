@@ -6,7 +6,7 @@ const Viz5: React.FC = () => {
         <div className="viz-container">
           <div className="paragraph">
             <p className="section-badge">/ Visualization 05</p>
-            <h1 className="viz-title">Trends Over Time</h1>
+            <h1 className="viz-title">Name of visualization</h1>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
