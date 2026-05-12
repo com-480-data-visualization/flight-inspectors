@@ -9,6 +9,7 @@ const navItems = [
   { id: 'section3', label: 'Viz 3' },
   { id: 'section4', label: 'Viz 4' },
   { id: 'section5', label: 'Viz 5' },
+  { id: 'section6', label: 'Viz 6' },
   { id: 'about-section', label: 'Team' },
 ]
 
