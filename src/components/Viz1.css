@@ -107,7 +107,8 @@
 }
 
 .viz1-mfr-item.checked {
-  color: var(--text-h);
+  background: var(--accent-dim);
+  color: var(--accent);
 }
 
 .viz1-mfr-item input[type="checkbox"] {
