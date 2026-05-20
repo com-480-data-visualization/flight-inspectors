@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './Hero.css'
 import { GithubIcon } from './icons/GithubIcon'
+import Boids from './Boids'
 
 const stats = [
   { value: '...', label: 'Stat 1' },
@@ -32,6 +33,7 @@ const Hero: React.FC = () => {
 
   return (
     <div className="hero-content">
+      <Boids />
       <div className="hero-container">
         <h1 className="hero-title">
           {/* How safe do you think<br />
