@@ -114,6 +114,7 @@
 .about-contribution {
   font-size: 0.95rem;
   color: var(--text-muted);
+  text-align: left;
   margin: 0;
 }
 

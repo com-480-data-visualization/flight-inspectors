@@ -2,7 +2,7 @@ import './About.css'
 
 const team = [
   { name: 'Nicolas Karmolinski', contribution: 'Created data visualization ... and ..., ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
-  { name: 'Roméo Maignal', contribution: 'Created data visualization ... and ..., ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
+  { name: 'Roméo Maignal', contribution: 'Worked on the first skeleton of the website and then embellished it with additional decorations, animations and responsive design features. In charge, of the two first data visualizations, extracting the corresponding data and implementing the interactive features with D3.js' },
   { name: 'Jakub Kielar', contribution: 'Created data visualization ... and ..., ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
 ]
 
