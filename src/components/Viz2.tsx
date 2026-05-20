@@ -8,11 +8,18 @@ const Viz2: React.FC = () => {
         <div className="viz-container">
           <div className="widget" ref={ref}>
             <button className="fullscreen-btn" aria-label="Toggle Fullscreen" onClick={toggle}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-                {isFullscreen
-                  ? <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z" />
-                  : <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" />
-                }
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                {isFullscreen ? <>
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3"/>
+                  <path d="M21 8h-3a2 2 0 0 1-2-2V3"/>
+                  <path d="M3 16h3a2 2 0 0 1 2 2v3"/>
+                  <path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
+                </> : <>
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+                  <path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+                  <path d="M3 16v3a2 2 0 0 0 2 2h3"/>
+                  <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+                </>}
               </svg>
             </button>
             <h2>

@@ -6,15 +6,18 @@
   --text-h: #ffffff;
   --text-muted: #52525b;
   --accent: rgb(0, 234, 255);
-  --accent-dim: rgba(0, 234, 255, 0.15);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(255, 255, 255, 0.15);
-  --border-sep: rgba(255, 255, 255, 0.1);
+  --accent-dim: rgba(0, 234, 255, 0.12);
+  --glow-dim: rgba(0, 234, 255, 0.6);
+  --border: rgba(255, 255, 255, 0.15);
+  --border-hover: rgba(255, 255, 255, 0.3);
+  --border-sep: rgba(255, 255, 255, 0.15);
   --surface-hover: rgba(255, 255, 255, 0.05);
   --surface-active: rgba(255, 255, 255, 0.1);
   --nav-bg: rgba(3, 3, 3, 1);
   --nav-mobile-bg: rgba(3, 3, 3, 0.98);
   --code-string: #a78bfa;
+
+  --navbar-height: 4.5rem;
 
   --sans: 'Inter', system-ui, -apple-system, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
@@ -38,10 +41,11 @@
   --text-muted: #a1a1aa;
   --accent: rgb(0, 170, 190);
   --accent-dim: rgba(0, 170, 190, 0.12);
-  --border: rgba(0, 0, 0, 0.08);
-  --border-hover: rgba(0, 0, 0, 0.18);
-  --border-sep: rgba(0, 0, 0, 0.1);
-  --surface-hover: rgba(0, 0, 0, 0.04);
+  --glow-dim: rgba(0, 170, 190, 0.6);
+  --border: rgba(0, 0, 0, 0.15);
+  --border-hover: rgba(0, 0, 0, 0.3);
+  --border-sep: rgba(0, 0, 0, 0.15);
+  --surface-hover: rgba(0, 0, 0, 0.05);
   --surface-active: rgba(0, 0, 0, 0.08);
   --nav-bg: rgba(245, 245, 245, 1);
   --nav-mobile-bg: rgba(245, 245, 245, 0.98);
@@ -60,6 +64,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg);
+  scroll-padding-top: var(--navbar-height);
 }
 
 body {

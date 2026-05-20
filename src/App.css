@@ -5,13 +5,73 @@
 
 .section {
   border-top: 1px solid var(--border-sep);
-  min-height: 100vh;
+  min-height: calc(100svh - var(--navbar-height));
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
   padding: 6rem 2rem;
   position: relative;
+}
+
+.section::before,
+.section::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--border-hover);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.section::before {
+  top: 4.5rem;
+  left: 4.5rem;
+  border-width: 1px 0 0 1px;
+}
+
+.section::after {
+  bottom: 4.5rem;
+  right: 4.5rem;
+  border-width: 0 1px 1px 0;
+}
+
+/* top-right and bottom-left corners via the outer <section> wrapper */
+section:has(.section),
+section:has(.intro-content),
+section:has(.about-content) {
+  position: relative;
+}
+
+section:has(.section)::before,
+section:has(.intro-content)::before,
+section:has(.about-content)::before {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--border-hover);
+  border-style: solid;
+  pointer-events: none;
+  top: 4.5rem;
+  right: 4.5rem;
+  border-width: 1px 1px 0 0;
+}
+
+section:has(.section)::after,
+section:has(.intro-content)::after,
+section:has(.about-content)::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--border-hover);
+  border-style: solid;
+  pointer-events: none;
+  bottom: 4.5rem;
+  left: 4.5rem;
+  border-width: 0 0 1px 1px;
 }
 
 .section-inner {
@@ -35,16 +95,21 @@
   gap: 1rem;
   text-align: left;
   align-items: flex-start;
+  max-width: 52ch;
 }
 
 .viz-container .paragraph .section-badge {
-  font-size: 0.75rem; 
+  font-size: 0.75rem;
   margin-bottom: 0.25rem;
   justify-content: flex-start;
 }
 
+.viz-container .paragraph p,
+.viz-container .paragraph .viz-title {
+  width: 100%;
+}
+
 .viz-container .paragraph p {
-  max-width: 55ch;
   font-size: 0.95rem;
   line-height: 1.8;
 }
@@ -61,7 +126,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 0 24px -4px var(--glow-dim), 0 0 8px -2px var(--glow-dim);
 }
 
 /* center each grid child within its half */
@@ -77,14 +143,34 @@
   left: 50%;
   top: 0;
   bottom: 0;
-  width: 1px;
-  background: var(--border);
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
   transform: translateX(-50%);
   pointer-events: none;
 }
 
+.widget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .widget:hover {
   border-color: var(--border-hover);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 40px -4px var(--glow-dim), 0 0 20px -2px var(--glow-dim);
+}
+
+.widget:hover::before {
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
 }
 
 .fullscreen-btn {
@@ -109,7 +195,22 @@
 
 .viz-title {
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.75rem;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  position: relative;
+}
+
+.viz-title::after {
+  content: '';
+  position: absolute;
+  bottom: -0.75rem;
+  left: 0;
+  width: 2.5rem;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.55;
 }
 
 .site-footer {
@@ -130,14 +231,31 @@
   font-size: 0.8rem;
 }
 
-.widget:fullscreen,
-.widget:-webkit-full-screen {
-  max-width: 100%;
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-  border: none;
+@keyframes widget-expand {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes widget-collapse {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(0.96); }
+}
+
+.widget--fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  z-index: 9999;
   background: var(--bg);
+  animation: widget-expand 0.22s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.widget--fullscreen.widget--closing {
+  animation: widget-collapse 0.18s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @media (max-width: 1024px) {
