@@ -321,6 +321,7 @@ const Viz2: React.FC = () => {
 
                 <div className="viz2-track-wrap">
                   <div className="viz2-track-fill" style={{ width: `${pct}%` }} />
+                  <span className="viz2-yr-thumb-label" style={{ left: `${pct}%` }}>{year}</span>
                   <input
                     type="range"
                     className="viz2-slider"
@@ -329,8 +330,6 @@ const Viz2: React.FC = () => {
                     onChange={e => { setPlaying(false); setYear(Number(e.target.value)) }}
                   />
                 </div>
-
-                <span className="viz2-yr-current">{year}</span>
               </div>
 
               <span className="viz2-yr-edge">{YEAR_MAX}</span>

@@ -128,6 +128,7 @@
   border-radius: 2px;
   background: var(--border);
   cursor: pointer;
+  margin-top: 22px; /* room for the floating year label above */
 }
 
 .viz2-track-fill {
@@ -148,14 +149,16 @@
   margin: 0;
 }
 
-/* current year badge */
-.viz2-yr-current {
+/* floating year label above the thumb */
+.viz2-yr-thumb-label {
+  position: absolute;
+  top: -22px;
+  transform: translateX(-50%);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--accent);
   white-space: nowrap;
-  min-width: 36px;
-  text-align: right;
-  flex-shrink: 0;
+  pointer-events: none;
+  user-select: none;
 }

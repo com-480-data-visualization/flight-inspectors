@@ -4,9 +4,9 @@ import { GithubIcon } from './icons/GithubIcon'
 import Boids from './Boids'
 
 const stats = [
-  { value: '...', label: 'Stat 1' },
-  { value: '...', label: 'Stat 2' },
-  { value: '...', label: 'Stat 3' },
+  { value: '5,078', label: 'Crashes' },
+  { value: '93.197', label: 'Civilian fatalities' },
+  { value: '116', label: 'Years of data' },
 ]
 
 const Hero: React.FC = () => {
