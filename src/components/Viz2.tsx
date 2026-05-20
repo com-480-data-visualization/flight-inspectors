@@ -18,6 +18,22 @@ interface BubbleNode extends d3.SimulationNodeDatum {
   name: string
   value: number
   r: number
+  colorIdx: number
+  __restX?: number
+  __restY?: number
+}
+
+const PALETTE = [
+  '#a78bfa', '#22d3ee', '#fb923c', '#f87171', '#4ade80',
+  '#facc15', '#60a5fa', '#f472b6', '#a3e635', '#34d399',
+  '#e879f9', '#38bdf8', '#fbbf24', '#fb7185', '#c084fc',
+]
+
+function hexToRgba(hex: string, a: number): string {
+  const r = parseInt(hex.slice(1, 3), 16)
+  const g = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  return `rgba(${r},${g},${b},${a})`
 }
 
 const YEAR_MIN = 1920
@@ -34,7 +50,7 @@ const Viz2: React.FC = () => {
 
   const [data,      setData]      = useState<AirlinePoint[]>([])
   const [metric,    setMetric]    = useState<Metric>('incidents')
-  const [year,      setYear]      = useState(2000)
+  const [year,      setYear]      = useState(1949)
   const [playing,   setPlaying]   = useState(false)
   const [chartSize, setChartSize] = useState({ w: 0, h: 0 })
 
@@ -128,28 +144,25 @@ const Viz2: React.FC = () => {
 
     /* merge with existing nodes to preserve positions */
     const existing = new Map(nodesRef.current.map(n => [n.key, n]))
-    const newNodes: BubbleNode[] = yearData.map((d: AirlinePoint) => {
+    const newNodes: BubbleNode[] = yearData.map((d: AirlinePoint, i: number) => {
       const prev = existing.get(d.key)
       const r    = Math.max(rScale(d[metric]), 6)
       if (prev) {
-        prev.value = d[metric]
-        prev.name  = d.name
-        prev.r     = r
+        prev.value    = d[metric]
+        prev.name     = d.name
+        prev.r        = r
+        prev.colorIdx = i
         return prev
       }
       return {
-        key: d.key, name: d.name, value: d[metric], r,
+        key: d.key, name: d.name, value: d[metric], r, colorIdx: i,
         x: w / 2 + (Math.random() - 0.5) * w * 0.3,
         y: h / 2 + (Math.random() - 0.5) * h * 0.3,
       }
     })
     nodesRef.current = newNodes
 
-    const accent = getComputedStyle(document.documentElement)
-      .getPropertyValue('--accent').trim() || 'rgb(0,234,255)'
-    const fill = accent.startsWith('rgb(')
-      ? accent.replace('rgb(', 'rgba(').replace(')', ',0.12)')
-      : 'rgba(0,234,255,0.12)'
+    const color = (d: BubbleNode) => PALETTE[d.colorIdx % PALETTE.length]
 
     /* D3 join */
     const groups = svg.selectAll<SVGGElement, BubbleNode>('.bbl')
@@ -177,8 +190,8 @@ const Viz2: React.FC = () => {
     all.select<SVGCircleElement>('circle')
       .transition().duration(350)
       .attr('r', (d: BubbleNode) => d.r)
-      .attr('fill', fill)
-      .attr('stroke', accent)
+      .attr('fill', (d: BubbleNode) => hexToRgba(color(d), 0.15))
+      .attr('stroke', (d: BubbleNode) => color(d))
       .attr('stroke-width', 1.5)
 
     all.select<SVGTextElement>('text')
@@ -190,12 +203,12 @@ const Viz2: React.FC = () => {
     all
       .on('mouseover', (event: MouseEvent, d: BubbleNode) => {
         d3.select(event.currentTarget as SVGGElement)
-          .select('circle').attr('stroke-width', 2.5).attr('fill', fill.replace('0.12', '0.22'))
+          .select('circle').attr('stroke-width', 2.5).attr('fill', hexToRgba(color(d), 0.28))
         if (!chartRef.current) return
         const tip = d3.select<HTMLDivElement, unknown>('.viz2-tooltip')
         const rect = chartRef.current.getBoundingClientRect()
         tip.style('display', 'block')
-          .html(`<span class="viz2-tt-name">${d.name}</span><br/>${d.value} ${metric}`)
+          .html(`<span class="viz2-tt-name" style="color:${color(d)}">${d.name}</span><br/>${d.value} ${metric}`)
           .style('left', `${Math.min(event.clientX - rect.left + 12, chartSize.w - 160)}px`)
           .style('top',  `${Math.max(event.clientY - rect.top  - 50, 4)}px`)
       })
@@ -206,11 +219,35 @@ const Viz2: React.FC = () => {
           .style('left', `${Math.min(event.clientX - rect.left + 12, chartSize.w - 160)}px`)
           .style('top',  `${Math.max(event.clientY - rect.top  - 50, 4)}px`)
       })
-      .on('mouseout', (event: MouseEvent) => {
+      .on('mouseout', (event: MouseEvent, d: BubbleNode) => {
         d3.select(event.currentTarget as SVGGElement)
-          .select('circle').attr('stroke-width', 1.5).attr('fill', fill)
+          .select('circle').attr('stroke-width', 1.5).attr('fill', hexToRgba(color(d), 0.15))
         d3.select('.viz2-tooltip').style('display', 'none')
       })
+
+    /* drag — free movement, snaps back on release */
+    const drag = d3.drag<SVGGElement, BubbleNode>()
+      .on('start', (_ev: d3.D3DragEvent<SVGGElement, BubbleNode, BubbleNode>, d: BubbleNode) => {
+        simRef.current?.alphaTarget(0.3).restart()
+        d.fx = d.x; d.fy = d.y
+        d.__restX = d.x ?? 0; d.__restY = d.y ?? 0
+        d3.select(_ev.sourceEvent.target as SVGCircleElement).attr('stroke-width', 2.5)
+      })
+      .on('drag', (ev: d3.D3DragEvent<SVGGElement, BubbleNode, BubbleNode>, d: BubbleNode) => {
+        d.fx = ev.x
+        d.fy = ev.y
+      })
+      .on('end', (ev: d3.D3DragEvent<SVGGElement, BubbleNode, BubbleNode>, d: BubbleNode) => {
+        simRef.current?.alphaTarget(0)
+        d3.select(ev.sourceEvent.target as SVGCircleElement).attr('stroke-width', 1.5)
+        // give an initial velocity toward rest position for a snappy return
+        d.vx = ((d.__restX ?? 0) - (d.x ?? 0)) * 0.35
+        d.vy = ((d.__restY ?? 0) - (d.y ?? 0)) * 0.35
+        d.fx = null; d.fy = null
+        simRef.current?.alpha(0.45).restart()
+      })
+
+    all.call(drag)
 
     /* restart simulation */
     if (simRef.current) {

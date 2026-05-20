@@ -45,6 +45,14 @@
   position: relative;
 }
 
+.bbl circle {
+  cursor: grab;
+}
+
+.bbl circle:active {
+  cursor: grabbing;
+}
+
 /* ── tooltip ── */
 .viz2-tooltip {
   position: absolute;

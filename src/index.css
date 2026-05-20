@@ -7,7 +7,10 @@
   --text-muted: #52525b;
   --accent: rgb(0, 234, 255);
   --accent-dim: rgba(0, 234, 255, 0.12);
+  --second-accent: rgb(124, 59, 237);
+  --second-accent-dim: rgba(124, 59, 237, 0.12);
   --glow-dim: rgba(0, 234, 255, 0.6);
+  --secondary-glow-dim: rgba(124, 59, 237, 0.6);
   --border: rgba(255, 255, 255, 0.15);
   --border-hover: rgba(255, 255, 255, 0.3);
   --border-sep: rgba(255, 255, 255, 0.15);
@@ -44,6 +47,7 @@
   --second-accent: rgb(124, 59, 237);
   --second-accent-dim: rgba(124, 59, 237, 0.12);
   --glow-dim: rgba(0, 170, 190, 0.6);
+  --secondary-glow-dim: rgba(124, 59, 237, 0.6);
   --border: rgba(0, 0, 0, 0.15);
   --border-hover: rgba(0, 0, 0, 0.3);
   --border-sep: rgba(0, 0, 0, 0.15);

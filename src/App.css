@@ -165,7 +165,7 @@ section:has(.about-content)::after {
 .widget:hover {
   border-color: var(--border-hover);
   background: var(--bg-elevated);
-  box-shadow: 0 0 40px -4px var(--glow-dim), 0 0 20px -2px var(--glow-dim);
+  box-shadow: 0 0 40px -4px var(--secondary-glow-dim), 0 0 20px -2px var(--secondary-glow-dim);
 }
 
 .widget:hover::before {
