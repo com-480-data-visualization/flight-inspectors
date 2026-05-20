@@ -20,7 +20,7 @@ const Introduction: React.FC = () => {
             <h3 className="card-title">Our Approach</h3>
             <p>
               We provide an interactive platform to assess air travel safety
-              through various visualizations — routes, airlines, aircraft types,
+              through various visualizations such as routes, airlines, aircraft types,
               and advanced statistical analyses.
             </p>
           </div>

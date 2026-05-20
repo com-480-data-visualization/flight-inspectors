@@ -9,12 +9,11 @@
 }
 
 .navbar.scrolled {
-    /* background: rgba(3, 3, 3, 0.60); */ /* The background blur doesn't work when the website is published on github pages. For now this is commented out but once we understand the issue we can uncomment it */ 
-    background: rgba(3, 3, 3, 1);
+    background: var(--nav-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     /* border-bottom: 1px solid var(--border); */
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-sep);
     /* padding: 0.7rem 0; */
 }
 
@@ -65,12 +64,36 @@
 
 .navbar-item:hover {
     color: var(--text-h);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--surface-hover);
 }
 
 .navbar-item.active {
     color: var(--accent);
     background: var(--accent-dim);
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.theme-toggle {
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: var(--text);
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background: var(--surface-active);
+    color: var(--text-h);
+    border-color: var(--border-hover);
 }
 
 .mobile-menu-button {
@@ -104,7 +127,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(3, 3, 3, 0.98);
+        background: var(--nav-mobile-bg);
         flex-direction: column;
         justify-content: center;
         gap: 1rem;

@@ -61,7 +61,7 @@
 }
 
 .code-string {
-  color: #a78bfa;
+  color: var(--code-string);
 }
 
 .cursor {

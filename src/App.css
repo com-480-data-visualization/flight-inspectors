@@ -4,7 +4,7 @@
 }
 
 .section {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-sep);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -91,7 +91,7 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface-hover);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px;
@@ -103,7 +103,7 @@
 }
 
 .fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-active);
   color: var(--text-h);
 }
 
