@@ -24,13 +24,23 @@
 .viz1-ctrl-btn {
   display: inline-flex;
   align-items: center;
+  height: 30px;
+  padding: 0 8px 0 10px;
+}
+
+.viz1-ctrl-select {
+  height: 30px;
+  padding: 0 28px 0 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--bg-card);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
 }
 
 .viz1-ctrl-btn,
 .viz1-ctrl-select {
-  height: 30px;
-  padding: 0 10px;
-  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
@@ -41,6 +51,10 @@
   transition: border-color 0.15s;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.viz1-ctrl-btn {
+  background: var(--bg-card);
 }
 
 .viz1-ctrl-btn:hover,

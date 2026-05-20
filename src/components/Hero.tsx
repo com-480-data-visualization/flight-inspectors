@@ -5,7 +5,7 @@ import Boids from './Boids'
 
 const stats = [
   { value: '5,078', label: 'Crashes' },
-  { value: '93.197', label: 'Civilian fatalities' },
+  { value: '93,197', label: 'Civilian fatalities' },
   { value: '116', label: 'Years of data' },
 ]
 
