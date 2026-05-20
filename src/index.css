@@ -41,6 +41,8 @@
   --text-muted: #a1a1aa;
   --accent: rgb(0, 170, 190);
   --accent-dim: rgba(0, 170, 190, 0.12);
+  --second-accent: rgb(124, 59, 237);
+  --second-accent-dim: rgba(124, 59, 237, 0.12);
   --glow-dim: rgba(0, 170, 190, 0.6);
   --border: rgba(0, 0, 0, 0.15);
   --border-hover: rgba(0, 0, 0, 0.3);
@@ -49,7 +51,6 @@
   --surface-active: rgba(0, 0, 0, 0.08);
   --nav-bg: rgba(245, 245, 245, 1);
   --nav-mobile-bg: rgba(245, 245, 245, 0.98);
-  --code-string: #7c3aed;
   color-scheme: light;
 }
 

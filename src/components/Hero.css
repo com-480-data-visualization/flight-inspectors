@@ -84,7 +84,7 @@
 }
 
 .code-string {
-  color: var(--code-string);
+  color: var(--second-accent);
 }
 
 .cursor {

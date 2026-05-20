@@ -81,10 +81,11 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: var(--accent-dim);
+  /* background: var(--accent-dim); */
+  background: var(--second-accent-dim);
   /* border: 1px solid rgba(60, 236, 124, 0.3); */
 
-  border: 1px solid rgba(60, 215, 236, 0.3);
+  border: 1px solid rgba(124, 59, 237, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,7 +96,8 @@
   font-family: var(--mono);
   font-size: 1.3rem;
   font-weight: 600;
-  color: var(--accent);
+  /* color: var(--accent); */
+  color: var(--second-accent);
 }
 
 .about-name {

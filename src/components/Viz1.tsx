@@ -148,8 +148,10 @@ if (!data.length || !svgRef.current || !chartRef.current) return
       .range([0, x0.bandwidth()])
       .padding(0.06)
 
-    const maxVal = d3.max(filtered, d => d[metric]) ?? 0
-    const y = d3.scaleLinear()
+    type BarDatum = { mfr: string; yr: number; value: number }
+
+    const maxVal = d3.max(filtered, (d: DataPoint) => d[metric]) ?? 0
+    const yScale = d3.scaleLinear()
       .domain([0, Math.max(maxVal * 1.15, 1)])
       .range([height, 0])
       .nice()
@@ -157,10 +159,10 @@ if (!data.length || !svgRef.current || !chartRef.current) return
     // Horizontal grid lines
     g.append('g')
       .selectAll('line')
-      .data(y.ticks(5))
+      .data(yScale.ticks(5))
       .join('line')
       .attr('x1', 0).attr('x2', width)
-      .attr('y1', d => y(d)).attr('y2', d => y(d))
+      .attr('y1', (d: number) => yScale(d)).attr('y2', (d: number) => yScale(d))
       .attr('stroke', 'var(--border)')
       .attr('stroke-dasharray', '3,3')
       .attr('stroke-width', 0.8)
@@ -169,21 +171,21 @@ if (!data.length || !svgRef.current || !chartRef.current) return
     g.selectAll('.yr-grp')
       .data(years)
       .join('g')
-      .attr('transform', yr => `translate(${x0(String(yr))},0)`)
+      .attr('transform', (yr: number) => `translate(${x0(String(yr))},0)`)
       .selectAll('rect')
-      .data(yr => selectedMfrs.map(mfr => ({
+      .data((yr: number) => selectedMfrs.map(mfr => ({
         mfr, yr,
         value: lookup.get(yr)?.get(mfr)?.[metric] ?? 0,
       })))
       .join('rect')
-      .attr('x', d => x1(d.mfr) ?? 0)
-      .attr('y', d => y(d.value))
+      .attr('x', (d: BarDatum) => x1(d.mfr) ?? 0)
+      .attr('y', (d: BarDatum) => yScale(d.value))
       .attr('width', x1.bandwidth())
-      .attr('height', d => Math.max(0, height - y(d.value)))
-      .attr('fill', d => MFR_COLORS[d.mfr] ?? '#888')
+      .attr('height', (d: BarDatum) => Math.max(0, height - yScale(d.value)))
+      .attr('fill', (d: BarDatum) => MFR_COLORS[d.mfr] ?? '#888')
       .attr('rx', 2)
       .attr('opacity', 0.82)
-      .on('mouseover', function(event, d) {
+      .on('mouseover', function(this: SVGRectElement, event: MouseEvent, d: BarDatum) {
         d3.select(this).attr('opacity', 1)
         const tooltip = tooltipRef.current
         if (!tooltip || !chartRef.current) return
@@ -201,7 +203,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
         tooltip.style.left = `${Math.min(ex + 14, totalWidth - 200)}px`
         tooltip.style.top = `${Math.max(ey - 70, 4)}px`
       })
-      .on('mousemove', function(event) {
+      .on('mousemove', function(this: SVGRectElement, event: MouseEvent) {
         const tooltip = tooltipRef.current
         if (!tooltip || !chartRef.current) return
         const rect = chartRef.current.getBoundingClientRect()
@@ -210,7 +212,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
         tooltip.style.left = `${Math.min(ex + 14, totalWidth - 200)}px`
         tooltip.style.top = `${Math.max(ey - 70, 4)}px`
       })
-      .on('mouseout', function() {
+      .on('mouseout', function(this: SVGRectElement) {
         d3.select(this).attr('opacity', 0.82)
         if (tooltipRef.current) tooltipRef.current.style.display = 'none'
       })
@@ -221,7 +223,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
       .attr('transform', `translate(0,${height})`)
       .call(
         d3.axisBottom(x0)
-          .tickValues(years.filter((_, i) => i % tickEvery === 0).map(String))
+          .tickValues(years.filter((_: number, i: number) => i % tickEvery === 0).map(String))
           .tickSize(3)
       )
     xG.select('.domain').attr('stroke', 'var(--border)')
@@ -236,7 +238,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
     }
 
     // Y axis
-    const yG = g.append('g').call(d3.axisLeft(y).ticks(5).tickSize(3))
+    const yG = g.append('g').call(d3.axisLeft(yScale).ticks(5).tickSize(3))
     yG.select('.domain').attr('stroke', 'var(--border)')
     yG.selectAll('line').attr('stroke', 'var(--border)')
     yG.selectAll('text').attr('fill', 'var(--text-muted)').attr('font-size', '10px')
@@ -309,11 +311,11 @@ if (!data.length || !svgRef.current || !chartRef.current) return
               </select>
 
               <select className="viz1-ctrl-select" value={yearFrom} onChange={e => setYearFrom(Number(e.target.value))}>
-                {d3.range(YEAR_MIN, yearTo).map(y => <option key={y} value={y}>{y}</option>)}
+                {d3.range(YEAR_MIN, yearTo).map(yr => <option key={yr} value={yr}>{yr}</option>)}
               </select>
               <span className="viz1-ctrl-sep">–</span>
               <select className="viz1-ctrl-select" value={yearTo} onChange={e => setYearTo(Number(e.target.value))}>
-                {d3.range(yearFrom + 1, YEAR_MAX + 1).map(y => <option key={y} value={y}>{y}</option>)}
+                {d3.range(yearFrom + 1, YEAR_MAX + 1).map(yr => <option key={yr} value={yr}>{yr}</option>)}
               </select>
 
               <div className="viz1-legend">
