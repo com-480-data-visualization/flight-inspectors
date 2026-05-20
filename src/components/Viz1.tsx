@@ -185,8 +185,8 @@ if (!data.length || !svgRef.current || !chartRef.current) return
       .attr('fill', (d: BarDatum) => MFR_COLORS[d.mfr] ?? '#888')
       .attr('rx', 2)
       .attr('opacity', 0.82)
-      .on('mouseover', function(this: SVGRectElement, event: MouseEvent, d: BarDatum) {
-        d3.select(this).attr('opacity', 1)
+      .on('mouseover', (event: MouseEvent, d: BarDatum) => {
+        d3.select(event.currentTarget as SVGRectElement).attr('opacity', 1)
         const tooltip = tooltipRef.current
         if (!tooltip || !chartRef.current) return
         const yearData = lookup.get(d.yr)
@@ -203,7 +203,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
         tooltip.style.left = `${Math.min(ex + 14, totalWidth - 200)}px`
         tooltip.style.top = `${Math.max(ey - 70, 4)}px`
       })
-      .on('mousemove', function(this: SVGRectElement, event: MouseEvent) {
+      .on('mousemove', (event: MouseEvent) => {
         const tooltip = tooltipRef.current
         if (!tooltip || !chartRef.current) return
         const rect = chartRef.current.getBoundingClientRect()
@@ -212,8 +212,8 @@ if (!data.length || !svgRef.current || !chartRef.current) return
         tooltip.style.left = `${Math.min(ex + 14, totalWidth - 200)}px`
         tooltip.style.top = `${Math.max(ey - 70, 4)}px`
       })
-      .on('mouseout', function(this: SVGRectElement) {
-        d3.select(this).attr('opacity', 0.82)
+      .on('mouseout', (event: MouseEvent) => {
+        d3.select(event.currentTarget as SVGRectElement).attr('opacity', 0.82)
         if (tooltipRef.current) tooltipRef.current.style.display = 'none'
       })
 
