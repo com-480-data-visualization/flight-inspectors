@@ -1,22 +1,31 @@
 import { useEffect, useState } from 'react'
 import './NavigationBar.css'
 
-const navItems = [
+const topNavItems = [
   { id: 'hero-section', label: 'Home' },
   { id: 'introduction-section', label: 'Introduction' },
+]
+
+const vizItems = [
   { id: 'section1', label: 'Viz 1' },
   { id: 'section2', label: 'Viz 2' },
   { id: 'section3', label: 'Viz 3' },
   { id: 'section4', label: 'Viz 4' },
   { id: 'section5', label: 'Viz 5' },
   { id: 'section6', label: 'Viz 6' },
+]
+
+const bottomNavItems = [
   { id: 'about-section', label: 'Team' },
 ]
+
+const allNavItems = [...topNavItems, ...vizItems, ...bottomNavItems]
 
 const NavigationBar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [activeSection, setActiveSection] = useState('hero-section')
+  const [isVizOpen, setIsVizOpen] = useState(false)
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const stored = localStorage.getItem('theme') as 'dark' | 'light' | null
     if (stored) return stored
@@ -51,9 +60,9 @@ const NavigationBar: React.FC = () => {
       setScrolled(window.scrollY > 20)
 
       const viewportProbe = window.scrollY + window.innerHeight * 0.35
-      let currentSection = navItems[0].id
+      let currentSection = allNavItems[0].id
 
-      for (const item of navItems) {
+      for (const item of allNavItems) {
         const section = document.getElementById(item.id)
         if (section && viewportProbe >= section.offsetTop) {
           currentSection = item.id
@@ -81,6 +90,8 @@ const NavigationBar: React.FC = () => {
     setIsMenuOpen(false)
   }
 
+  const vizIsActive = vizItems.some(v => v.id === activeSection)
+
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
       <div className="navbar-container">
@@ -91,7 +102,76 @@ const NavigationBar: React.FC = () => {
         </a>
 
         <ul className={`navbar-menu${isMenuOpen ? ' active' : ''}`}>
-          {navItems.map((item) => (
+          {topNavItems.map((item) => (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                className={`navbar-item${activeSection === item.id ? ' active' : ''}`}
+                onClick={() => {
+                  setActiveSection(item.id)
+                  closeMenu()
+                }}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+
+          {/* Desktop: hover dropdown */}
+          <li
+            className="navbar-dropdown-wrapper"
+            onMouseEnter={() => setIsVizOpen(true)}
+            onMouseLeave={() => setIsVizOpen(false)}
+          >
+            <span className={`navbar-item navbar-dropdown-trigger${vizIsActive ? ' active' : ''}`}>
+              Visualizations
+              <svg
+                className={`dropdown-arrow${isVizOpen ? ' open' : ''}`}
+                viewBox="0 0 24 24" width="12" height="12"
+                fill="none" stroke="currentColor" strokeWidth="2"
+                strokeLinecap="round" strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </span>
+            <ul className={`navbar-dropdown${isVizOpen ? ' open' : ''}`}>
+              <div className="navbar-dropdown-inner">
+                {vizItems.map((item) => (
+                  <li key={item.id}>
+                    <a
+                      href={`#${item.id}`}
+                      className={`navbar-item${activeSection === item.id ? ' active' : ''}`}
+                      onClick={() => {
+                        setActiveSection(item.id)
+                        closeMenu()
+                        setIsVizOpen(false)
+                      }}
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </div>
+            </ul>
+          </li>
+
+          {/* Mobile only: viz items shown flat */}
+          {vizItems.map((item) => (
+            <li key={`mob-${item.id}`} className="mobile-viz-item">
+              <a
+                href={`#${item.id}`}
+                className={`navbar-item${activeSection === item.id ? ' active' : ''}`}
+                onClick={() => {
+                  setActiveSection(item.id)
+                  closeMenu()
+                }}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+
+          {bottomNavItems.map((item) => (
             <li key={item.id}>
               <a
                 href={`#${item.id}`}
