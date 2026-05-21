@@ -18,7 +18,24 @@ You can also visit the deployed version of the website hosted on GitHub Pages at
 The primary dataset we will be working with is a dataset of plane crashes from 1908 to 2024 found on [Kaggle by Luiscé Francisco](https://www.kaggle.com/datasets/luiscfrancisco/plane-crashes-dataset/data). As a complement, we will be using the airports, routes, and airlines datasets from [OpenFlights](https://openflights.org/data), a free, high-quality and comprehensive aviation database.
 
 ### Run the data analysis
-TODO
+The scripts only use Python's standard library. They all read from `data/crashes_cleaned.csv`.
+
+**Hero section stats** (prints summary figures to stdout):
+```bash
+python3 data/hero_stats.py
+```
+
+**Viz 1 — incidents & fatalities by manufacturer** (writes `public/data/crashes_by_manufacturer.json`):
+```bash
+python3 data/viz1/script.py
+```
+
+**Viz 2 — incidents & fatalities by airline** (writes `public/data/crashes_by_airline.json`):
+```bash
+python3 data/viz2/script.py
+```
+
+Run all three from the project root. The two viz scripts must be run before `npm run dev` if the JSON files are missing.
 
 ## Contributors
 | Student's name | SCIPER | Contribution |
