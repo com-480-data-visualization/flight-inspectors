@@ -33,8 +33,8 @@ TODO
 - Build tool & development server: [Vite](https://vite.dev/)
 - Runtime environment: [Node.js](https://nodejs.org/en)
 - Package manager: [NPM](https://docs.npmjs.com/)
-- Hosting service: [GitHub Pages](https://docs.github.com/en/pages)
 - Data visualization library: [D3](https://d3js.org/)
+- Hosting service: [GitHub Pages](https://docs.github.com/en/pages)
 
 <div inline style="display: flex; gap: 1rem; margin-top: 1rem;" bb>
 <img width="50" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Typescript_logo_2020.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original" alt="TypeScript" title="TypeScript"/>
@@ -42,6 +42,6 @@ TODO
 <img width="50" src="https://v2.vitejs.dev/logo.svg" alt="Vite" title="Vite"/>
 <img width="50" src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="Node.js" title="Node.js"/>
 <img width="50" src="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg?utm_source=commons.wikimedia.org&utm_campaign=index&utm_content=original"/>
-<img width="150" src="https://blog.frankel.ch/assets/resources/refresher-github-pages/github-pages.svg"/>
 <img width="50" src="https://d3js.org/logo.svg"/>
+<img width="100" src="https://blog.frankel.ch/assets/resources/refresher-github-pages/github-pages.svg"/>
 </div>
