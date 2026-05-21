@@ -339,7 +339,7 @@ const Viz2: React.FC = () => {
 
         <div className="paragraph">
           <p className="section-badge">/ Visualization 02</p>
-          <h1 className="viz-title">Which airlines have the worst safety record?</h1>
+          <h1 className="viz-title">Safety record of airlines</h1>
           <p>
             Each bubble represents one of the top airlines by incident count.
             Its size reflects the number of incidents or fatalities in the selected

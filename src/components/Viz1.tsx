@@ -254,7 +254,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
       <div className="viz-container">
         <div className="paragraph">
           <p className="section-badge">/ Visualization 01</p>
-          <h1 className="viz-title">Compare the safety record of aircraft manufacturers</h1>
+          <h1 className="viz-title">Safety record of aircraft manufacturers</h1>
           <p>
             Select any combination of manufacturers and see how their incident and fatality records compare year by year, from the dawn of commercial aviation to today.
           </p>
