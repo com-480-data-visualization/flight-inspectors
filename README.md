@@ -24,7 +24,7 @@ TODO
 | Student's name | SCIPER | Contribution |
 | -------------- | ------ | ------------ |
 | Nicolas Karmolinski | 316655 | TODO |
-| Roméo Maignal | 360568 | TODO |
+| Roméo Maignal | 360568 | Worked on the first skeleton of the website and then embellished it with additional decorations, animations and responsive design features. In charge of the two first data visualizations, extracting the corresponding data and implementing the interactive features with D3.js. |
 | Jakub Kielar | 423372| TODO |
 
 ## Stack
