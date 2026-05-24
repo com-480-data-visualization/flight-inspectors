@@ -256,7 +256,7 @@ if (!data.length || !svgRef.current || !chartRef.current) return
           <p className="section-badge">/ Visualization 01</p>
           <h1 className="viz-title">Safety record of aircraft manufacturers</h1>
           <p>
-            Select any combination of manufacturers and see how their incident and fatality records compare year by year, from the dawn of commercial aviation to today.
+             In recent years, Boeing's 737 MAX defects have led the media to often portray the aircraft manufacturer as less reliable than its European counterpart, Airbus. While it's true that recent serious incidents have regularly implicated the American company, what is the real situation? What does the data say about other aircraft manufacturers? Select any combination of manufacturers and see how their incident and fatality records compare year by year, from the dawn of commercial aviation to today.
           </p>
         </div>
         <div className="widget" ref={widgetRef}>

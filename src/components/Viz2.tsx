@@ -341,10 +341,7 @@ const Viz2: React.FC = () => {
           <p className="section-badge">/ Visualization 02</p>
           <h1 className="viz-title">Safety record of airlines</h1>
           <p>
-            Each bubble represents one of the top airlines by incident count.
-            Its size reflects the number of incidents or fatalities in the selected
-            year. Drag the slider or press play to watch how the record evolves
-            from 1920 to 2024.
+            What about airlines? What is the correlation between the name of a flight operator and its risk of incident/accident? Each bubble represents one of the top airlines by incident count. Its size reflects the number of incidents or fatalities in the selected year. Drag the slider or press play to watch how the record evolves from 1920 to 2024.
           </p>
         </div>
       </div>
