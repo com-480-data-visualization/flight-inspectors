@@ -1,9 +1,294 @@
 #section4 {
-    background: var(--bg);
+  background: var(--bg);
 }
 
-#section4 .widget h2 {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 400;
+.viz4-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 14px;
+  gap: 8px;
 }
+
+/* ── info strip: routes count + inline date label ── */
+.viz4-info {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+  padding-right: 36px;   /* clear the absolute-positioned fullscreen button */
+  font-family: var(--mono);
+}
+
+.viz4-info-count {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.viz4-info-label {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ── chart ── */
+.viz4-chart {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+.viz4-chart svg {
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  touch-action: none;
+}
+
+.viz4-chart svg:active {
+  cursor: grabbing !important;
+}
+
+/* dots are hidden on the back hemisphere or when a different route is focused */
+.viz4-chart g.dot {
+  transition: opacity 0.12s;
+  opacity: 1;
+}
+.viz4-chart g.dot[data-vis="0"],
+.viz4-chart g.dot[data-focus="0"] {
+  opacity: 0;
+}
+
+/* ── tooltip ── */
+.viz4-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.5;
+  min-width: 180px;
+  max-width: 240px;
+  z-index: 20;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+}
+
+.viz4-tt-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-h);
+  margin-bottom: 5px;
+}
+
+.viz4-tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.viz4-tt-row b {
+  color: var(--text-h);
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+  max-width: 60%;
+}
+
+.viz4-tt-loc {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.viz4-tt-loc b {
+  color: #ff7a7a;
+  font-weight: 600;
+}
+.viz4-tt-aprx {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 10px;
+}
+
+.viz4-tt-hint {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+  font-size: 9.5px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+}
+
+.viz4-tt-close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.viz4-tt-close:hover {
+  background: var(--surface-active);
+  color: var(--text-h);
+}
+
+/* When pinned the tooltip captures the mouse so the X button is clickable */
+.viz4-tooltip.viz4-tt-pinned {
+  pointer-events: auto;
+  border-color: var(--accent);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--accent);
+}
+.viz4-tooltip.viz4-tt-pinned .viz4-tt-title {
+  padding-right: 22px;  /* leave room for the close button */
+}
+
+/* ── year brush (centred range label + dual-thumb track) ── */
+.viz4-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+/* ── inline date range label inside the info row ── */
+.viz4-range-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.viz4-range-label b {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.viz4-range-label span {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+/* Fullscreen mode: scale labels up to match the much bigger canvas */
+.widget--fullscreen .viz4-range-label {
+  font-size: 30px;
+  letter-spacing: 0.06em;
+  gap: 10px;
+}
+.widget--fullscreen .viz4-range-label span { font-size: 24px; }
+.widget--fullscreen .viz4-info-count { font-size: 22px; }
+.widget--fullscreen .viz4-info-label { font-size: 14px; }
+
+.viz4-track-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz4-yr-edge {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  min-width: 28px;
+  text-align: center;
+}
+
+.viz4-track-wrap {
+  flex: 1;
+  position: relative;
+  height: 22px;
+  min-width: 0;
+}
+
+.viz4-track {
+  position: absolute;
+  left: 0; right: 0; top: 9px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.viz4-track-fill {
+  position: absolute;
+  top: 9px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* dual sliders, transparent track, styled thumbs */
+.viz4-slider {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 22px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  pointer-events: none;
+  margin: 0;
+  z-index: 2;
+}
+
+.viz4-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  cursor: grab;
+  box-shadow: 0 0 0 1px var(--accent), 0 0 8px var(--glow-dim);
+  transition: transform 0.12s;
+}
+.viz4-slider::-webkit-slider-thumb:hover { transform: scale(1.18); }
+
+.viz4-slider::-moz-range-thumb {
+  pointer-events: auto;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  cursor: grab;
+  box-shadow: 0 0 0 1px var(--accent), 0 0 8px var(--glow-dim);
+}
+
+.viz4-slider::-webkit-slider-runnable-track { background: transparent; border: none; height: 22px; }
+.viz4-slider::-moz-range-track             { background: transparent; border: none; height: 22px; }
+.viz4-slider:active::-webkit-slider-thumb { cursor: grabbing; }
+.viz4-slider:active::-moz-range-thumb     { cursor: grabbing; }
