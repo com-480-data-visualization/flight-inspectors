@@ -7,3 +7,146 @@
     font-size: 0.9rem;
     font-weight: 400;
 }
+
+.viz5-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 8px;
+  gap: 8px;
+}
+
+/* ── Controls row ── */
+.viz5-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  padding-right: 36px;
+}
+
+.viz5-ctrl-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: var(--sans);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.viz5-ctrl-select {
+  height: 30px;
+  padding: 0 28px 0 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--bg-card);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='12' height='12' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.viz5-ctrl-select:hover {
+  border-color: var(--border-hover);
+}
+
+.viz5-ctrl-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+
+/* ── Stats strip ── */
+.viz5-stats {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.viz5-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.viz5-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz5-stat-value {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ── Chart area ── */
+.viz5-chart {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+}
+
+/* ── Tooltip ── */
+.viz5-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.75;
+  max-width: 210px;
+  z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.viz5-tt-k {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-h);
+  margin-bottom: 2px;
+}
+
+.viz5-tt-row {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.viz5-tt-row b {
+  color: var(--text);
+}
+
+/* ── Empty / loading state ── */
+.viz5-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-family: var(--sans);
+  pointer-events: none;
+}
