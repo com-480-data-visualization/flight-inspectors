@@ -7,6 +7,9 @@ Flight Inspectors is a data visualization project that explores the history of p
 
 ## Run
 ```
+npm install
+```
+```
 npm run dev
 ```
 Open [http://localhost:5174/](http://localhost:5174/) with your browser to view the website.
