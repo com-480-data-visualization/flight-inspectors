@@ -13,3 +13,5 @@ The Process Book for Milestone 3 can be found here: [Process-Book.pdf](Process-B
 A screencast showcasing our website can be found here: [screencast.mp4](screencast.mp4)
 
 You can find the final implementation of our website along with our data visualizations here: [https://com-480-data-visualization.github.io/flight-inspectors/](https://com-480-data-visualization.github.io/flight-inspectors/)
+
+A backup link of our screencast is on [YouTube](https://youtu.be/V0eT11RyvJQ).
