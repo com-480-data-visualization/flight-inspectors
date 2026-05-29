@@ -1,5 +1,5 @@
 #section5 {
-    background: var(--bg);
+  background: var(--bg);
 }
 
 #section5 .widget h2 {
@@ -149,4 +149,10 @@
   color: var(--text-muted);
   font-family: var(--sans);
   pointer-events: none;
+}
+
+.viz5-ctrl-sep-dash {
+  color: var(--text-muted);
+  font-size: 12px;
+  flex-shrink: 0;
 }

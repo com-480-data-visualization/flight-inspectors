@@ -1,43 +1,52 @@
-from typing import Optional
-
 """
 Viz5 — Poisson flight risk modeller
 Generates: public/data/crashes_for_poisson.json
 
+Requires geo_utils.py in the same directory.
+Dependencies: geonamescache, pycountry-convert
+  pip install geonamescache pycountry-convert
+
+CSV columns used (exact names from crashes_cleaned.csv):
+  Year, AC mfr, Operator, Departure, Arrival, Fatalities
+
 Output schema:
   {
-    "byYear": [{ "year", "incidents", "fatalities" }, ...],
-    "byManufacturer": [{ "key", "name", "incidents", "fatalities", "years" }, ...],
-    "byAirline": [{ "name", "incidents", "fatalities", "years" }, ...],
-    "byOrigin": [{ "country", "incidents", "fatalities", "years" }, ...],
-    "byDestination": [{ "country", "incidents", "fatalities", "years" }, ...],
-    "combinations": [
+    "manufacturers": ["Boeing", ...],   // sorted by total incidents desc
+    "airlines":      ["Aeroflot", ...],
+    "departures":    ["London", ...],   // city names, sorted by total desc
+    "arrivals":      ["New York", ...],
+    "decades":       ["1920s", "1930s", ...],
+    "combinations":  [
       {
-        "year", "manufacturer", "airline", "origin", "destination",
-        "incidents", "fatalities"
+        "decade":        "1970s",
+        "manufacturer":  "Boeing",
+        "airline":       "Pan American World Airways",
+        "departure":     "New York",
+        "arrival":       "London",
+        "incidents":     3,
+        "fatalities":    210
       }, ...
     ],
     "meta": { "yearMin", "yearMax", "totalIncidents", "totalFatalities" }
   }
 
-The `combinations` array is the key payload: each entry represents one
-(year × manufacturer × airline × origin × destination) bucket so the
-front-end can filter on any combination of dimensions reactively.
-
-CSV columns expected (subset of Plane Crash Info / Aviation Safety Network
-exports; gracefully skipped if absent):
-  Year, AC mfr, Operator, Departure airport country,
-  Destination airport country, Fatalities
+The front-end filters `combinations` on all five dimensions at once and
+sums `incidents` / `fatalities` over the matching decade range to get λ.
 """
 
 import csv
 import json
 import os
-import re
+import sys
 from collections import defaultdict
 
+# geo_utils.py lives alongside this script
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.insert(0, ROOT)
+from data.geo_utils import city_to_country, city_to_alpha2, alpha2_to_continent, decade_label, resolve_city
+
 # ---------------------------------------------------------------------------
-# Manufacturer normalisation (same keys as Viz1)
+# Manufacturer normalisation  (same keys as Viz1)
 # ---------------------------------------------------------------------------
 MFR_DISPLAY = {
     'boeing':     'Boeing',
@@ -62,32 +71,31 @@ MFR_DISPLAY = {
     'let':        'LET',
 }
 
-# Keyword → normalised key  (checked as substrings of lowercased AC mfr)
 MFR_KEYWORDS = [
-    ('boeing',             'boeing'),
-    ('airbus',             'airbus'),
-    ('mcdonnell',          'mcdonnell'),
-    ('douglas',            'douglas'),
-    ('lockheed',           'lockheed'),
-    ('de havilland',       'de'),
-    ('dehavilland',        'de'),
-    ('antonov',            'antonov'),
-    ('ilyushin',           'ilyushin'),
-    ('fokker',             'fokker'),
-    ('tupolev',            'tupolev'),
-    ('convair',            'convair'),
-    ('embraer',            'embraer'),
-    ('cessna',             'cessna'),
-    ('bell',               'bell'),
-    ('atr',                'atr'),
-    ('beechcraft',         'beechcraft'),
-    ('yakovlev',           'yakovlev'),
-    ('avro',               'avro'),
-    ('sikorsky',           'sikorsky'),
-    ('let',                'let'),
+    ('boeing',       'boeing'),
+    ('airbus',       'airbus'),
+    ('mcdonnell',    'mcdonnell'),
+    ('douglas',      'douglas'),
+    ('lockheed',     'lockheed'),
+    ('de havilland', 'de'),
+    ('dehavilland',  'de'),
+    ('antonov',      'antonov'),
+    ('ilyushin',     'ilyushin'),
+    ('fokker',       'fokker'),
+    ('tupolev',      'tupolev'),
+    ('convair',      'convair'),
+    ('embraer',      'embraer'),
+    ('cessna',       'cessna'),
+    ('bell ',        'bell'),
+    ('atr',          'atr'),
+    ('beechcraft',   'beechcraft'),
+    ('yakovlev',     'yakovlev'),
+    ('avro',         'avro'),
+    ('sikorsky',     'sikorsky'),
+    ('let ',         'let'),
 ]
 
-def normalise_mfr(raw: str) -> Optional[str]:
+def normalise_mfr(raw: str) -> str | None:
     s = raw.strip().lower()
     for keyword, key in MFR_KEYWORDS:
         if keyword in s:
@@ -95,250 +103,137 @@ def normalise_mfr(raw: str) -> Optional[str]:
     return None
 
 # ---------------------------------------------------------------------------
-# Airline normalisation — keep top operators verbatim, bucket the rest
-# ---------------------------------------------------------------------------
-TOP_AIRLINES = {
-    'aeroflot', 'air france', 'american airlines', 'british airways',
-    'delta air lines', 'eastern air lines', 'indian airlines',
-    'japan airlines', 'korean air', 'lufthansa',
-    'pan american world airways', 'sabena', 'singapore airlines',
-    'turkish airlines', 'united airlines', 'continental airlines',
-    'northwest airlines', 'us airways', 'southwest airlines',
-    'iberia', 'alitalia', 'sas', 'olympic airways', 'thai airways',
-    'cathay pacific', 'qantas', 'air india', 'pakistan international airlines',
-    'iran air', 'egyptair', 'austrian airlines', 'swissair', 'tap air portugal',
-    'lot polish airlines', 'finnair', 'aer lingus', 'china airlines',
-    'china southern airlines', 'air china', 'vietnam airlines',
-}
-
-def normalise_airline(raw: str) -> str:
-    s = raw.strip().lower()
-    s = re.sub(r'\s+', ' ', s)
-    if not s:
-        return 'Unknown'
-    for name in TOP_AIRLINES:
-        if name in s:
-            # Return title-cased canonical name
-            return name.title().replace('Sas', 'SAS').replace('Tap ', 'TAP ')
-    return 'Other'
-
-# ---------------------------------------------------------------------------
-# Country normalisation — many CSV variants for the same country
-# ---------------------------------------------------------------------------
-COUNTRY_ALIASES = {
-    'usa': 'United States', 'u.s.': 'United States', 'us': 'United States',
-    'united states of america': 'United States',
-    'ussr': 'Russia', 'soviet union': 'Russia', 'russian federation': 'Russia',
-    'u.k.': 'United Kingdom', 'great britain': 'United Kingdom',
-    'uk': 'United Kingdom', 'england': 'United Kingdom',
-    'west germany': 'Germany', 'east germany': 'Germany',
-    'federal republic of germany': 'Germany',
-    'people\'s republic of china': 'China',
-    'republic of china': 'China',
-    "côte d'ivoire": 'Ivory Coast',
-    'democratic republic of the congo': 'DR Congo',
-    'zaire': 'DR Congo',
-}
-
-def normalise_country(raw: str) -> str:
-    if not raw or not raw.strip():
-        return 'Unknown'
-    s = raw.strip().lower()
-    if s in COUNTRY_ALIASES:
-        return COUNTRY_ALIASES[s]
-    return raw.strip().title()
-
-# ---------------------------------------------------------------------------
-# CSV column name candidates (different datasets use different headers)
-# ---------------------------------------------------------------------------
-def pick_col(header: list[str], candidates: list[str]) -> Optional[str]:
-    hl = [h.strip().lower() for h in header]
-    for c in candidates:
-        if c.lower() in hl:
-            return header[hl.index(c.lower())]
-    return None
-
-# ---------------------------------------------------------------------------
-# Main
+# Read CSV — exact column names from crashes_cleaned.csv
 # ---------------------------------------------------------------------------
 CSV_PATH = os.path.join(os.path.dirname(__file__), '..', 'crashes_cleaned.csv')
 rows = list(csv.DictReader(open(CSV_PATH, encoding='utf-8', errors='replace')))
+print(f"Loaded {len(rows)} rows")
 
-if not rows:
-    raise SystemExit('No rows found in crashes_cleaned.csv')
+# Buckets: (decade, mfr_display, airline, dep_city, arr_city) → {incidents, fatalities}
+combos: dict[tuple, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0})
 
-header = list(rows[0].keys())
-
-COL_YEAR    = pick_col(header, ['Year', 'year', 'DATE', 'date'])
-COL_MFR     = pick_col(header, ['AC mfr', 'AC_mfr', 'Manufacturer', 'manufacturer'])
-COL_FAT     = pick_col(header, ['Fatalities', 'fatalities', 'Fatal', 'fatal', 'Deaths'])
-COL_AIRLINE = pick_col(header, ['Operator', 'operator', 'Airline', 'airline', 'Carrier'])
-COL_ORIG    = pick_col(header, [
-    'Departure airport country', 'departure airport country',
-    'Origin country', 'origin_country', 'From country',
-    'Departure Country', 'departure_country', 'Departure'
-])
-COL_DEST    = pick_col(header, [
-    'Destination airport country', 'destination airport country',
-    'Dest country', 'dest_country', 'To country',
-    'Destination Country', 'destination_country', 'Arrival'
-])
-
-print(f'Columns detected:')
-print(f'  year={COL_YEAR}  mfr={COL_MFR}  fatalities={COL_FAT}')
-print(f'  airline={COL_AIRLINE}  origin={COL_ORIG}  dest={COL_DEST}')
-
-YEAR_MIN, YEAR_MAX = 1919, 2024
-
-# Structure: combinations[year][mfr_key][airline][origin][dest] → {incidents, fatalities}
-combos: dict = defaultdict(
-    lambda: defaultdict(
-        lambda: defaultdict(
-            lambda: defaultdict(
-                lambda: defaultdict(lambda: {'incidents': 0, 'fatalities': 0})
-            )
-        )
-    )
-)
+# Track all unique values for dropdown lists (with total incident counts)
+mfr_totals:  dict[str, int] = defaultdict(int)
+airl_totals: dict[str, int] = defaultdict(int)
+dep_totals:  dict[str, int] = defaultdict(int)
+arr_totals:  dict[str, int] = defaultdict(int)
 
 skipped = 0
+resolved_cities = 0
+unresolved_cities: dict[str, int] = defaultdict(int)
+
 for r in rows:
     try:
-        year = int(r[COL_YEAR]) if COL_YEAR else None
-        if year is None or year < YEAR_MIN or year > YEAR_MAX:
-            skipped += 1
-            continue
-
-        mfr_raw = r[COL_MFR].strip() if COL_MFR else ''
-        mfr_key = normalise_mfr(mfr_raw) or 'other'
-
-        fat_raw = r[COL_FAT].strip() if COL_FAT else ''
-        fat = float(fat_raw) if fat_raw else 0.0
-
-        airline = normalise_airline(r[COL_AIRLINE].strip() if COL_AIRLINE else '')
-        origin  = normalise_country(r[COL_ORIG].strip()    if COL_ORIG    else '')
-        dest    = normalise_country(r[COL_DEST].strip()    if COL_DEST    else '')
-
-        bucket = combos[year][mfr_key][airline][origin][dest]
-        bucket['incidents']  += 1
-        bucket['fatalities'] += fat
-
-    except (ValueError, KeyError, TypeError):
+        year = int(r['Year'])
+    except (ValueError, KeyError):
         skipped += 1
+        continue
 
-print(f'Skipped {skipped} rows (bad year / parse error)')
+    dec = decade_label(year)
+
+    # Manufacturer
+    mfr_raw = r.get('AC mfr', '').strip()
+    mfr_key = normalise_mfr(mfr_raw)
+    mfr_display = MFR_DISPLAY[mfr_key] if mfr_key else 'Other'
+
+    # Airline / Operator
+    airline = r.get('Operator', '').strip() or 'Unknown'
+    # Trim very long operator strings (e.g. military descriptions)
+    if len(airline) > 60:
+        airline = airline[:57] + '…'
+
+    # Fatalities
+    try:
+        fat = float(r.get('Fatalities', '') or 0)
+    except ValueError:
+        fat = 0.0
+
+    # Departure city
+    dep_raw = r.get('Departure', '').strip()
+    arr_raw = r.get('Arrival',   '').strip()
+
+    # Resolve to canonical city name (geonamescache name field) for display
+    dep_city = 'Unknown'
+    arr_city = 'Unknown'
+
+    if dep_raw:
+        dep_hit = resolve_city(dep_raw)
+        if dep_hit:
+            dep_city = dep_hit['name']
+            resolved_cities += 1
+        else:
+            unresolved_cities[dep_raw] += 1
+
+    if arr_raw:
+        arr_hit = resolve_city(arr_raw)
+        if arr_hit:
+            arr_city = arr_hit['name']
+            resolved_cities += 1
+        else:
+            unresolved_cities[arr_raw] += 1
+
+    key = (dec, mfr_display, airline, dep_city, arr_city)
+    combos[key]['incidents']  += 1
+    combos[key]['fatalities'] += fat
+
+    mfr_totals[mfr_display]  += 1
+    airl_totals[airline]     += 1
+    if dep_city != 'Unknown': dep_totals[dep_city] += 1
+    if arr_city != 'Unknown': arr_totals[arr_city] += 1
+
+print(f"Skipped {skipped} rows")
+print(f"Resolved city lookups: {resolved_cities}")
+print(f"Top 10 unresolved: {sorted(unresolved_cities.items(), key=lambda x: -x[1])[:10]}")
 
 # ---------------------------------------------------------------------------
-# Flatten to list of combination records
+# Build output
 # ---------------------------------------------------------------------------
 combination_list = []
-for year, mfr_d in combos.items():
-    for mfr_key, airline_d in mfr_d.items():
-        for airline, orig_d in airline_d.items():
-            for origin, dest_d in orig_d.items():
-                for dest, counts in dest_d.items():
-                    combination_list.append({
-                        'year':         year,
-                        'manufacturer': mfr_key,
-                        'airline':      airline,
-                        'origin':       origin,
-                        'destination':  dest,
-                        'incidents':    counts['incidents'],
-                        'fatalities':   int(counts['fatalities']),
-                    })
+for (dec, mfr, airl, dep, arr), counts in combos.items():
+    combination_list.append({
+        'decade':       dec,
+        'manufacturer': mfr,
+        'airline':      airl,
+        'departure':    dep,
+        'arrival':      arr,
+        'incidents':    counts['incidents'],
+        'fatalities':   int(counts['fatalities']),
+    })
 
-combination_list.sort(key=lambda x: x['year'])
+combination_list.sort(key=lambda x: x['decade'])
 
-# ---------------------------------------------------------------------------
-# Marginals
-# ---------------------------------------------------------------------------
-by_year: dict[int, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0})
-by_mfr:  dict[str, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0, 'years': set()})
-by_airl: dict[str, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0, 'years': set()})
-by_orig: dict[str, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0, 'years': set()})
-by_dest: dict[str, dict] = defaultdict(lambda: {'incidents': 0, 'fatalities': 0, 'years': set()})
+# Sorted dropdown lists (by total incidents, descending)
+def sorted_keys(d: dict[str, int], min_count: int = 1) -> list[str]:
+    return [k for k, _ in sorted(d.items(), key=lambda x: -x[1]) if _ >= min_count]
 
-for c in combination_list:
-    y = c['year']
-    by_year[y]['incidents']  += c['incidents']
-    by_year[y]['fatalities'] += c['fatalities']
-    for d, key in [
-        (by_mfr,  c['manufacturer']),
-        (by_airl, c['airline']),
-        (by_orig, c['origin']),
-        (by_dest, c['destination']),
-    ]:
-        d[key]['incidents']  += c['incidents']
-        d[key]['fatalities'] += c['fatalities']
-        d[key]['years'].add(y)
+all_decades = sorted({c['decade'] for c in combination_list})
 
-total_incidents  = sum(v['incidents']  for v in by_year.values())
-total_fatalities = sum(v['fatalities'] for v in by_year.values())
-
-def top(d: dict, n: int = 30) -> list:
-    return sorted(d.items(), key=lambda kv: -kv[1]['incidents'])[:n]
+total_incidents  = sum(c['incidents']  for c in combination_list)
+total_fatalities = sum(c['fatalities'] for c in combination_list)
 
 out = {
-    'byYear': [
-        {'year': y, 'incidents': v['incidents'], 'fatalities': v['fatalities']}
-        for y, v in sorted(by_year.items())
-    ],
-    'byManufacturer': [
-        {
-            'key':        k,
-            'name':       MFR_DISPLAY.get(k, k.title()),
-            'incidents':  v['incidents'],
-            'fatalities': v['fatalities'],
-            'years':      len(v['years']),
-        }
-        for k, v in top(by_mfr)
-    ],
-    'byAirline': [
-        {
-            'name':       k,
-            'incidents':  v['incidents'],
-            'fatalities': v['fatalities'],
-            'years':      len(v['years']),
-        }
-        for k, v in top(by_airl)
-    ],
-    'byOrigin': [
-        {
-            'country':    k,
-            'incidents':  v['incidents'],
-            'fatalities': v['fatalities'],
-            'years':      len(v['years']),
-        }
-        for k, v in top(by_orig, 40)
-        if k not in ('Unknown', '')
-    ],
-    'byDestination': [
-        {
-            'country':    k,
-            'incidents':  v['incidents'],
-            'fatalities': v['fatalities'],
-            'years':      len(v['years']),
-        }
-        for k, v in top(by_dest, 40)
-        if k not in ('Unknown', '')
-    ],
-    'combinations': combination_list,
+    'manufacturers': sorted_keys(mfr_totals),
+    'airlines':      sorted_keys(airl_totals),
+    'departures':    sorted_keys(dep_totals),
+    'arrivals':      sorted_keys(arr_totals),
+    'decades':       all_decades,
+    'combinations':  combination_list,
     'meta': {
-        'yearMin':         YEAR_MIN,
-        'yearMax':         YEAR_MAX,
+        'yearMin':         min(int(r['Year']) for r in rows if r.get('Year', '').isdigit()),
+        'yearMax':         max(int(r['Year']) for r in rows if r.get('Year', '').isdigit()),
         'totalIncidents':  total_incidents,
         'totalFatalities': total_fatalities,
     },
 }
 
-dest_path = os.path.join(
+dest = os.path.join(
     os.path.dirname(__file__), '..', '..', 'public', 'data', 'crashes_for_poisson.json'
 )
-os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-with open(dest_path, 'w') as f:
+os.makedirs(os.path.dirname(dest), exist_ok=True)
+with open(dest, 'w') as f:
     json.dump(out, f, separators=(',', ':'))
 
-print(f'Written {len(combination_list)} combination records → {dest_path}')
-print(f'Total incidents: {total_incidents}  |  Total fatalities: {total_fatalities}')
-print(f'Manufacturers: {len(by_mfr)}  |  Airlines: {len(by_airl)}  |  '
-      f'Origins: {len(by_orig)}  |  Destinations: {len(by_dest)}')
+print(f'\nWritten {len(combination_list)} combinations → {dest}')
+print(f'Manufacturers: {len(mfr_totals)}  Airlines: {len(airl_totals)}  '
+      f'Departures: {len(dep_totals)}  Arrivals: {len(arr_totals)}')
+print(f'Total incidents: {total_incidents}  Fatalities: {total_fatalities}')
