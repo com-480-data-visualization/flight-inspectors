@@ -944,6 +944,10 @@ def page_contributions(c):
                  "D3 force-simulation bubble chart with year slider and glow-on-hover. "
                  "The navbar backdrop-blur worked on the dev server but broke on "
                  "GitHub Pages, so we used a solid background for the deployed version."),
+                ("Process Book",
+                 "Wrote and generated the Process Book PDF for Milestone 3 using "
+                 "ReportLab, documenting all six visualizations, design decisions, "
+                 "challenges, and team contributions."),
             ]
         },
         {
@@ -978,6 +982,9 @@ def page_contributions(c):
                  "chart readable without losing too much detail. Removed self-connecting "
                  "arcs as they looked cluttered. Arc width is proportional to "
                  "crash-flow volume between regions."),
+                ("Screencast",
+                 "Recorded and edited the screencast for Milestone 3, demonstrating "
+                 "all six visualizations and the interactive features of the website."),
             ]
         },
     ]
