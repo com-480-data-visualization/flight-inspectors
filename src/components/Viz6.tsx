@@ -67,7 +67,7 @@ const viz6: React.FC = () => {
 
   // Filters
   const [manufacturer, setManufacturer] = useState('Any')
-  const [airline,      setAirline]      = useState('Any')
+  // const [airline,      setAirline]      = useState('Any')
   const [departure,    setDeparture]    = useState('Any')
   const [arrival,      setArrival]      = useState('Any')
   const [decadeFrom,   setDecadeFrom]   = useState('Any')
@@ -118,7 +118,6 @@ const viz6: React.FC = () => {
     const total = data.combinations.reduce((sum, c) => {
       if (!validDecades.has(c.decade))                              return sum
       if (manufacturer !== 'Any' && c.manufacturer !== manufacturer) return sum
-      if (airline      !== 'Any' && c.airline      !== airline)       return sum
       if (departure    !== 'Any' && c.departure    !== departure)     return sum
       if (arrival      !== 'Any' && c.arrival      !== arrival)       return sum
       return sum + c.incidents
@@ -131,7 +130,7 @@ const viz6: React.FC = () => {
       totalIncidents: total,
       decadesInRange: numDecades,
     }
-  }, [data, decadeFrom, decadeTo, manufacturer, airline, departure, arrival])
+  }, [data, decadeFrom, decadeTo, manufacturer, departure, arrival])
 
   // ── D3 chart ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -314,20 +313,8 @@ const viz6: React.FC = () => {
     : []
 
   return (
-    <div className="section" id="section5">
+    <div className="section" id="section6">
       <div className="viz-container">
-        <div className="paragraph">
-          <p className="section-badge">/ Visualization 06</p>
-          <h1 className="viz-title">Modelling your flight's crash risk</h1>
-          <p>
-            Using a Poisson process, we model crashes as a rate λ — the mean
-            number of incidents per year for a filtered subset of the data.
-            The chart shows the full probability distribution P(X = k): the
-            chance of exactly k crashes occurring in any given year. Filter by
-            manufacturer, airline, departure city, arrival city, and decade range.
-          </p>
-        </div>
-
         <div className="widget" ref={widgetRef}>
           <button className="fullscreen-btn" aria-label="Toggle Fullscreen" onClick={toggle}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -353,12 +340,6 @@ const viz6: React.FC = () => {
               <select className="viz6-ctrl-select" value={manufacturer} onChange={e => setManufacturer(e.target.value)}>
                 <option value="Any">Any</option>
                 {data?.manufacturers.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-
-              <span className="viz6-ctrl-label">Airline</span>
-              <select className="viz6-ctrl-select" value={airline} onChange={e => setAirline(e.target.value)}>
-                <option value="Any">Any</option>
-                {data?.airlines.map(a => <option key={a} value={a}>{a}</option>)}
               </select>
 
               <div className="viz6-ctrl-sep" />
@@ -427,6 +408,18 @@ const viz6: React.FC = () => {
               <div ref={tooltipRef} className="viz6-tooltip" style={{ display: 'none' }} />
             </div>
           </div>
+        </div>
+
+        <div className="paragraph">
+          <p className="section-badge">/ Visualization 06</p>
+          <h1 className="viz-title">Modelling your flight's crash risk</h1>
+          <p>
+            Using a Poisson process, we model crashes as a rate λ — the mean
+            number of incidents per year for a filtered subset of the data.
+            The chart shows the full probability distribution P(X = k): the
+            chance of exactly k crashes occurring in any given year. Filter by
+            manufacturer, airline, departure city, arrival city, and decade range.
+          </p>
         </div>
       </div>
     </div>

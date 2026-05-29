@@ -345,7 +345,7 @@ const Viz5: React.FC = () => {
         .map(([label, color]) => ({ label, color }))
 
   return (
-    <div className="section" id="section6">
+    <div className="section" id="section5">
       <div className="viz-container">
         <div className="paragraph">
           <p className="section-badge">/ Visualization 05</p>
