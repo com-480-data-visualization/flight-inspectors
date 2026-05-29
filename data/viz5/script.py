@@ -2,7 +2,6 @@
 Viz6 — Directed chord diagram: crash flows between origin and destination
 Generates: public/data/crashes_for_chord.json
 
-Requires geo_utils.py in the same directory.
 Dependencies: geonamescache, pycountry-convert
   pip install geonamescache pycountry-convert
 

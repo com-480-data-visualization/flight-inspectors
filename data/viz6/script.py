@@ -2,7 +2,6 @@
 Viz5 — Poisson flight risk modeller
 Generates: public/data/crashes_for_poisson.json
 
-Requires geo_utils.py in the same directory.
 Dependencies: geonamescache, pycountry-convert
   pip install geonamescache pycountry-convert
 
