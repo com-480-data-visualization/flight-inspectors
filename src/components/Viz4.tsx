@@ -415,9 +415,9 @@ const Viz4: React.FC = () => {
         ${closeBtn}
         <div class="viz4-tt-title">${escapeHtml(d.depCity)} → ${escapeHtml(d.arrCity)}</div>
         <div class="viz4-tt-row"><span>Year</span><b>${d.year}</b></div>
-        <div class="viz4-tt-row"><span>Operator</span><b>${escapeHtml(d.operator) || '—'}</b></div>
+        <div class="viz4-tt-row"><span>Operator</span><b>${escapeHtml(titleCase(d.operator)) || '—'}</b></div>
         <div class="viz4-tt-row"><span>Aircraft</span><b>${escapeHtml(d.ac_type) || '—'}</b></div>
-        <div class="viz4-tt-row"><span>Casualties</span><b>${d.fatalities} / ${d.aboard}</b></div>
+        <div class="viz4-tt-row"><span>Casualties / Passengers</span><b>${d.fatalities} / ${d.aboard}</b></div>
         ${d.location ? `<div class="viz4-tt-loc">Crashed near${aprx}<br/><b>${escapeHtml(d.location)}</b></div>` : ''}
         ${pinHint}
       `
@@ -518,10 +518,10 @@ const Viz4: React.FC = () => {
                     style={{ left: `${pctFrom}%`, width: `${pctTo - pctFrom}%` }} />
                   <input type="range" className="viz4-slider viz4-slider-from"
                     min={YEAR_MIN} max={YEAR_MAX} value={yearFrom}
-                    onChange={e => setYearFrom(Math.min(Number(e.target.value), yearTo - 1))} />
+                    onChange={e => setYearFrom(Math.min(Number(e.target.value), yearTo))} />
                   <input type="range" className="viz4-slider viz4-slider-to"
                     min={YEAR_MIN} max={YEAR_MAX} value={yearTo}
-                    onChange={e => setYearTo(Math.max(Number(e.target.value), yearFrom + 1))} />
+                    onChange={e => setYearTo(Math.max(Number(e.target.value), yearFrom))} />
                 </div>
                 <span className="viz4-yr-edge">{YEAR_MAX}</span>
               </div>
@@ -550,6 +550,14 @@ function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, c => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   }[c]!))
+}
+
+/* Capitalise the first letter of each word in an operator/airline name.
+   Source data is lowercase ("singapore airlines"), this gives us
+   "Singapore Airlines" while leaving punctuation and digits untouched. */
+function titleCase(s: string): string {
+  if (!s) return s
+  return s.replace(/\b[a-z]/g, c => c.toUpperCase())
 }
 
 export default Viz4

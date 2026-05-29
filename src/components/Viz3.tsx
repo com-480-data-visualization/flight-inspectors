@@ -439,10 +439,10 @@ const Viz3: React.FC = () => {
                     }} />
                   <input type="range" className="viz3-slider viz3-slider-from"
                     min={YEAR_MIN} max={YEAR_MAX} value={yearFrom}
-                    onChange={e => setYearFrom(Math.min(Number(e.target.value), yearTo - 1))} />
+                    onChange={e => setYearFrom(Math.min(Number(e.target.value), yearTo))} />
                   <input type="range" className="viz3-slider viz3-slider-to"
                     min={YEAR_MIN} max={YEAR_MAX} value={yearTo}
-                    onChange={e => setYearTo(Math.max(Number(e.target.value), yearFrom + 1))} />
+                    onChange={e => setYearTo(Math.max(Number(e.target.value), yearFrom))} />
                 </div>
                 <span className="viz3-yr-edge">{YEAR_MAX}</span>
               </div>

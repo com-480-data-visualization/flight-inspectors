@@ -9,8 +9,8 @@ const topNavItems = [
 const vizItems = [
   { id: 'section1', label: 'Safety record of aircraft manufacturers' },
   { id: 'section2', label: 'Safety record of airlines' },
-  { id: 'section3', label: 'Viz 3' },
-  { id: 'section4', label: 'Viz 4' },
+  { id: 'section3', label: 'Geographic distribution of crashes' },
+  { id: 'section4', label: 'Crashed flight routes around the world' },
   { id: 'section5', label: 'Viz 5' },
   { id: 'section6', label: 'Viz 6' },
 ]
