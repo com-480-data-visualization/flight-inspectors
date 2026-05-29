@@ -342,18 +342,6 @@ const Viz5: React.FC = () => {
   return (
     <div className="section" id="section5">
       <div className="viz-container">
-        <div className="paragraph">
-          <p className="section-badge">/ Visualization 05</p>
-          <h1 className="viz-title">Origin–destination flows: the most perilous routes</h1>
-          <p>
-            
-            Each arc segment represents a city, country, or continent. The bright
-            portion marks departures; the darker portion marks arrivals. Ribbon
-            thickness encodes crash count. Arrowheads point toward the arrival end.
-            Hover a node or ribbon for details.
-          </p>
-        </div>
-
         <div className="widget" ref={widgetRef}>
           <button className="fullscreen-btn" aria-label="Toggle Fullscreen" onClick={toggle}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -404,6 +392,19 @@ const Viz5: React.FC = () => {
               <div ref={tooltipRef} className="viz5-tooltip" style={{display:'none'}}/>
             </div>
           </div>
+        </div>
+
+        <div className="paragraph">
+          <p className="section-badge">/ Visualization 05</p>
+          <h1 className="viz-title">Origin–destination flows: the most perilous routes</h1>
+          <p>
+            Deeping a little further into where the crashes happened, the connections between
+            departure and arrival locations can be explored through this chord diagram. Ribbon
+            thickness encodes crash count. Arrowheads point toward the arrival end. Hover a node or ribbon for details.
+            By filtering between cities, countries or continents, explore the most dangerous routes between two locations.
+            Connections from one location to the same location needed to be omitted for readability, as they
+            represented the vast majority of crashes (e.g. domestic flights within the US).
+          </p>
         </div>
       </div>
     </div>

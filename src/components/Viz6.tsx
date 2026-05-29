@@ -412,11 +412,11 @@ const viz6: React.FC = () => {
           <p className="section-badge">/ Visualization 06</p>
           <h1 className="viz-title">Modelling your flight's crash risk</h1>
           <p>
-            Using a Poisson process, we model crashes as a rate λ — the mean
-            number of incidents per year for a filtered subset of the data.
-            The chart shows the full probability distribution P(X = k): the
-            chance of exactly k crashes occurring in any given year. Filter by
-            manufacturer, airline, departure city, arrival city, and decade range.
+            Assuming crashes are independent events occurring at a constant average rate, we can model them as a Poisson distribution.
+            This then gives the probability of experiencing k crashes in a year,
+            based on the historical average λ for filtered subset of the data.
+            By leveraging the various filters, you can model the probability of a custom
+            flight of crashing over a given period of time.
           </p>
         </div>
       </div>
