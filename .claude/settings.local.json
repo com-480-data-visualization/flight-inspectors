@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(anthropic-skills:pdf)",
+      "Skill(anthropic-skills:pdf:*)",
+      "Read(//c/Users/Jakub/**)",
+      "Bash(python -c \"import pdfplumber; pdf = pdfplumber.open\\(r'C:\\\\Users\\\\Jakub\\\\Downloads\\\\Milestone2.pdf'\\); print\\(f'Pages: {len\\(pdf.pages\\)}'\\); pdf.close\\(\\)\")",
+      "PowerShell(py -c \"import pdfplumber; pdf = pdfplumber.open\\(r'C:\\\\Users\\\\Jakub\\\\Downloads\\\\Milestone2.pdf'\\); print\\(f'Pages: {len\\(pdf.pages\\)}'\\); pdf.close\\(\\)\")",
+      "Bash(awk -F',' 'NR>1 && $14 != \"?\" && $15 != \"?\" {count++} END {print \"Crashes with both Departure & Arrival:\", count}' \"C:/github/flights/flight-inspectors/data/crashes_cleaned.csv\")",
+      "Bash(awk -F',' 'NR>1 && $14 != \"?\" && $15 != \"?\" {print $14\"|\"$15}' \"C:/github/flights/flight-inspectors/data/crashes_cleaned.csv\")",
+      "Bash(npm install *)",
+      "PowerShell(Get-Command node, npm, npx -ErrorAction SilentlyContinue | Format-Table Name, Source -Auto; \\(Get-ChildItem \"C:\\\\Program Files\\\\nodejs\\\\\" -ErrorAction SilentlyContinue | Select-Object -First 5\\).Name)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Bash(npm --version)",
+      "Bash(npm run *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s \"http://localhost:5174/flight-inspectors/\" -o /dev/null -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:5174/flight-inspectors/data/crashes_by_country.json\" -o /dev/null -w \"country.json HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:5174/flight-inspectors/data/crashed_routes.json\" -o /dev/null -w \"routes.json HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:5174/flight-inspectors/data/countries-110m.json\" -o /dev/null -w \"topo HTTP %{http_code}\\\\n\")",
+      "Bash(curl -s \"http://localhost:5174/flight-inspectors/\")",
+      "Bash(curl -s -o /dev/null -w \"main.tsx HTTP %{http_code}\\\\n\" \"http://localhost:5174/flight-inspectors/src/main.tsx\")",
+      "Bash(curl -s -o /dev/null -w \"Viz3.tsx HTTP %{http_code}\\\\n\" \"http://localhost:5174/flight-inspectors/src/components/Viz3.tsx\")",
+      "Bash(curl -s -o /dev/null -w \"Viz4.tsx HTTP %{http_code}\\\\n\" \"http://localhost:5174/flight-inspectors/src/components/Viz4.tsx\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" \"http://localhost:5174/flight-inspectors/\")",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
