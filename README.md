@@ -1,11 +1,26 @@
 # Flight Inspectors
 Flight Inspectors is a data visualization project that explores the history of plane crashes from 1908 to 2024. The project aims to provide insights into the causes and trends of plane crashes over time, as well as to raise awareness about aviation safety.
 
+## Milestone 1
+
+[Milestone 1](milestones/milestone1)
+
+## Milestone 2
+
+[Milestone 2](milestones/milestone2)
+
+## Milestone 3
+
+[Milestone 3](milestones/milestone3)
+
 ## Prerequisites
 - [Node.js / NPM](https://nodejs.org/en/download)
 - [Git](https://git-scm.com/install/)
 
 ## Run
+```
+pip install -r requirements
+```
 ```
 npm install
 ```
@@ -48,14 +63,26 @@ python3 data/viz3/script.py
 python3 data/viz4/script.py
 ```
 
-Run all from the project root. The four viz scripts must be run before `npm run dev` if the JSON files are missing.
+**Viz 5 — directed chord graph of accidents between locations** (writes `public/data/crashed_routes.json`):
+```bash
+python3 data/viz5/script.py
+```
+
+**Viz 6 — custom predictive model of airplane crashes** (writes `public/data/crashed_routes.json`):
+```bash
+python3 data/viz6/script.py
+```
+
+<sub><sup>Note: Viz 4 and 5 are swapped on the website for more fluent logical continuation, but was kept numbered as such to maintain consistency across our working pipeline.</sup></sub>
+
+Run all from the project root. The six viz scripts must be run before `npm run dev` if the JSON files are missing. `pip install -r requirements` required for viz5 and viz6.
 
 ## Contributors
-| Student's name | SCIPER | Contribution |
+| Student's name | SCIPER | Department |
 | -------------- | ------ | ------------ |
-| Nicolas Karmolinski | 316655 | TODO |
-| Roméo Maignal | 360568 | Worked on the first skeleton of the website and then embellished it with additional decorations, animations and responsive design features. In charge of the two first data visualizations, extracting the corresponding data and implementing the interactive features with D3.js. |
-| Jakub Kielar | 423372 | In charge of the third and fourth data visualizations, which add a geographic perspective to the dataset. Built a heatmap and treemap pair showing where crashes concentrate around the world, and an interactive 3D globe of crashed flight routes with a year-range slider for exploring different periods. |
+| Nicolas Karmolinski | 316655 | Data Science |
+| Roméo Maignal | 360568 | Computer Science |
+| Jakub Kielar | 423372 | Computer Science |
 
 ## Stack
 - Scripting language: [TypeScript](https://www.typescriptlang.org/)

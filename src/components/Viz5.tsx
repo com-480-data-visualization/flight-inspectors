@@ -105,9 +105,6 @@ const Viz5: React.FC = () => {
         const base = PALETTE.indexOf(CONTINENT_COLORS[cont] ?? '#6b7280')
         const idx  = contIdx.get(cont) ?? 0; contIdx.set(cont, idx+1)
         colorMap.set(n.id, PALETTE[(base + idx) % PALETTE.length])
-        // then:
-        // const base = (CONTINENT_IDX[cont] ?? 6) * 3
-        // colorMap.set(n.id, PALETTE[(base + idx) % PALETTE.length])
       })
     }
     return { nodes: sorted, flows: filtered, colorMap }
