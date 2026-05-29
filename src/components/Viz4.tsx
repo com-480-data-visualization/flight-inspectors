@@ -478,6 +478,18 @@ const Viz4: React.FC = () => {
   return (
     <div className="section" id="section4">
       <div className="viz-container">
+        <div className="paragraph">
+          <p className="section-badge">/ Visualization 04</p>
+          <h1 className="viz-title">Crashed flight routes around the world</h1>
+          <p>
+            Each line on the globe is a flight that never made it to its destination. Lines connect the
+            departure (white) and arrival (cyan) airports as great-circle arcs, and their colour scales
+            with the number of fatalities, pale yellow for incidents with no deaths, deep red for the
+            deadliest. Drag the globe to rotate it, or let it spin on its own. Brush the year range below
+            to focus on a period. Hover any line to reveal a red X at the crash location (precise where
+            it's known, dashed and labelled <em>approx.</em> when only city-level data is available).
+          </p>
+        </div>
         <div className="widget" ref={widgetRef}>
           <button className="fullscreen-btn" aria-label="Toggle Fullscreen" onClick={toggle}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -527,19 +539,6 @@ const Viz4: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="paragraph">
-          <p className="section-badge">/ Visualization 04</p>
-          <h1 className="viz-title">Crashed flight routes around the world</h1>
-          <p>
-            Each line on the globe is a flight that never made it to its destination. Lines connect the
-            departure (white) and arrival (cyan) airports as great-circle arcs, and their colour scales
-            with the number of fatalities, pale yellow for incidents with no deaths, deep red for the
-            deadliest. Drag the globe to rotate it, or let it spin on its own. Brush the year range below
-            to focus on a period. Hover any line to reveal a red X at the crash location (precise where
-            it's known, dashed and labelled <em>approx.</em> when only city-level data is available).
-          </p>
         </div>
       </div>
     </div>
