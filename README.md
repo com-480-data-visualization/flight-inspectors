@@ -1,6 +1,14 @@
 # Flight Inspectors
 Flight Inspectors is a data visualization project that explores the history of plane crashes from 1908 to 2024. The project aims to provide insights into the causes and trends of plane crashes over time, as well as to raise awareness about aviation safety.
 
+## Contributors
+
+| Student's name | SCIPER | Department |
+| -------------- | ------ | ------------ |
+| Nicolas Karmolinski | 316655 | Data Science |
+| Roméo Maignal | 360568 | Computer Science |
+| Jakub Kielar | 423372 | Computer Science |
+
 ## Milestone 1
 
 [Milestone 1](milestones/milestone1)
@@ -76,13 +84,6 @@ python3 data/viz6/script.py
 <sub><sup>Note: Viz 4 and 5 are swapped on the website for more fluent logical continuation, but was kept numbered as such to maintain consistency across our working pipeline.</sup></sub>
 
 Run all from the project root. The six viz scripts must be run before `npm run dev` if the JSON files are missing. `pip install -r requirements` required for viz5 and viz6.
-
-## Contributors
-| Student's name | SCIPER | Department |
-| -------------- | ------ | ------------ |
-| Nicolas Karmolinski | 316655 | Data Science |
-| Roméo Maignal | 360568 | Computer Science |
-| Jakub Kielar | 423372 | Computer Science |
 
 ## Stack
 - Scripting language: [TypeScript](https://www.typescriptlang.org/)
