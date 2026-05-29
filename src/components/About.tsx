@@ -1,9 +1,9 @@
 import './About.css'
 
 const team = [
-  { name: 'Nicolas Karmolinski', contribution: 'Created data visualization ... and ..., ... Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' },
-  { name: 'Roméo Maignal', contribution: 'Worked on the first skeleton of the website and then embellished it with additional decorations, animations and responsive design features. In charge of the two first data visualizations, extracting the corresponding data and implementing the interactive features with D3.js.' },
-  { name: 'Jakub Kielar', contribution: 'In charge of the third and fourth data visualizations, which add a geographic perspective to the dataset. Built a heatmap and treemap pair showing where crashes concentrate around the world, and an interactive 3D globe of crashed flight routes with a year-range slider for exploring different periods.' },
+  { name: 'Nicolas Karmolinski', contribution: '\nEPFL\nMSc Data Science' },
+  { name: 'Roméo Maignal', contribution: '\nEPFL\nBSc Computer Science' },
+  { name: 'Jakub Kielar', contribution: '\nWarsaw University of Technology\nMSc Computer Science' },
 ]
 
 const About: React.FC = () => {
@@ -23,7 +23,10 @@ const About: React.FC = () => {
                 </span>
               </div>
               <h3 className="about-name">{member.name}</h3>
-              <p className="about-contribution">{member.contribution}</p>
+              <p className="about-contribution">{member.contribution.split('\n').map((line, i) => (
+                <div key={i}>{line}</div>
+              ))}
+              </p>
             </div>
           ))}
         </div>
