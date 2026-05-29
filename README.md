@@ -11,15 +11,15 @@ Flight Inspectors is a data visualization project that explores the history of p
 
 ## Milestone 1
 
-[Milestone 1](milestones/milestone1)
+[Milestone 1](milestones/milestone1/MILESTONE1.md)
 
 ## Milestone 2
 
-[Milestone 2](milestones/milestone2)
+[Milestone 2](milestones/milestone2/MILESTONE2.md)
 
 ## Milestone 3
 
-[Milestone 3](milestones/milestone3)
+[Milestone 3](milestones/milestone3/MILESTONE3.md)
 
 ## Prerequisites
 - [Node.js / NPM](https://nodejs.org/en/download)
