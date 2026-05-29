@@ -1,7 +1,7 @@
 import { useFullscreen } from '../hooks/useFullscreen'
 import { useEffect, useRef, useState, useMemo } from 'react'
 import * as d3 from 'd3'
-import './viz6.css'
+import './Viz6.css'
 
 // ---------------------------------------------------------------------------
 // Types
