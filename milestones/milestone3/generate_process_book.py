@@ -866,17 +866,19 @@ def page_contributions(c):
             "colour": ACCENT,
             "tasks": [
                 ("Website skeleton & CI/CD",
-                 "Created the initial React + Vite + TailwindCSS project structure, "
-                 "set up the GitHub Pages CI pipeline and established the component "
-                 "architecture used by all three teammates throughout the project."),
-                ("Visualization 1 — Manufacturer bar chart",
-                 "Designed and implemented the grouped bar chart: Python preprocessing "
-                 "script, D3 scaleBand grouping, dropdown filters, animated transitions "
-                 "and per-bar tooltip."),
-                ("Visualization 2 — Airline bubble chart",
-                 "Designed and implemented the D3 force-simulation bubble chart with "
-                 "year slider, live-label on thumb, glow-on-hover effect and "
-                 "multi-colour palette."),
+                 "Set up the React + Vite + TailwindCSS project and the GitHub Pages "
+                 "pipeline. Getting everything to render properly on Pages was tricky: "
+                 "Vite's base path had to be configured manually or all asset URLs broke "
+                 "on deploy while working fine locally."),
+                ("Visualization 1 - Manufacturer bar chart",
+                 "Grouped bar chart with D3 scaleBand, dropdown filters and animated "
+                 "transitions. GitHub Pages kept serving cached JSON so we added "
+                 "cache-busting to the data fetch to make sure the latest file "
+                 "was always loaded."),
+                ("Visualization 2 - Airline bubble chart",
+                 "D3 force-simulation bubble chart with year slider and glow-on-hover. "
+                 "The navbar backdrop-blur worked on the dev server but broke on "
+                 "GitHub Pages, so we used a solid background for the deployed version."),
             ]
         },
         {
@@ -884,18 +886,16 @@ def page_contributions(c):
             "sciper": "423372",
             "colour": ACCENT2,
             "tasks": [
-                ("Visualization 3 — Heatmap + Treemap",
-                 "Wrote the Python data pipeline for crash-by-country aggregation, "
-                 "implemented the Mercator choropleth with custom latitude clipping, "
-                 "and built the linked treemap with cross-highlighting between panels."),
-                ("Visualization 4 — Interactive Globe",
-                 "Implemented the 3D orthographic globe with D3 geoOrthographic, "
-                 "arc drawing scaled by fatalities, auto-rotate with idle detection, "
-                 "drag interaction, year-range slider and pinned route tooltips."),
-                ("Python data scripts (Viz 3 & 4)",
-                 "Authored data/viz3/script.py and data/viz4/script.py, cross-referencing "
-                 "the crash CSV with OpenFlights to resolve geo-coordinates and produce "
-                 "crashed_routes.json and crashes_by_country.json."),
+                ("Visualization 3 - Heatmap + Treemap",
+                 "Mercator choropleth with custom latitude clipping linked to a treemap "
+                 "with cross-highlighting. The TopoJSON bundle was large enough to "
+                 "cause a blank map on GitHub Pages, fixed by lazy-loading the file "
+                 "and showing a loading state in the meantime."),
+                ("Visualization 4 - Interactive Globe",
+                 "3D orthographic globe with arc drawing, auto-rotate and drag. "
+                 "On GitHub Pages the globe sometimes started spinning before assets "
+                 "finished loading, showing blank frames. Waiting for all files "
+                 "before starting the animation fixed it."),
             ]
         },
         {
@@ -903,18 +903,16 @@ def page_contributions(c):
             "sciper": "316655",
             "colour": ACCENT3,
             "tasks": [
-                ("Visualization 5 — Poisson distribution model",
-                 "Designed the statistical approach, authored the Python aggregation "
-                 "script producing the combination-level JSON, and implemented the React "
-                 "component with cascading filters, log-factorial PMF and D3 bar chart."),
-                ("Data analysis & EDA (Milestone 1)",
-                 "Wrote the exploratory analysis notebooks (preliminary_analysis.ipynb, "
-                 "preprocessing.ipynb) and the hero-stats script that feed the dataset "
-                 "figures shown in the Hero section."),
-                ("Dataset preprocessing pipeline",
-                 "Cleaned and standardised the raw Kaggle crash CSV "
-                 "(crashes_cleaned.csv), matched records to OpenFlights identifiers, "
-                 "and documented the data-preparation steps for the whole team."),
+                ("Visualization 5 - Poisson distribution model",
+                 "Dropped the airline filter since too many carriers are discontinued, "
+                 "making results hard to read. Used decade presets instead of single "
+                 "years for more useful estimates. Cached log-factorials to avoid "
+                 "floating-point overflow for large k values."),
+                ("Visualization 6 - Directed chord diagram",
+                 "Finding the right number of nodes took trial and error to keep the "
+                 "chart readable without losing too much detail. Removed self-connecting "
+                 "arcs as they looked cluttered. Arc width is proportional to "
+                 "crash-flow volume between regions."),
             ]
         },
     ]
@@ -964,9 +962,9 @@ def page_contributions(c):
     c.drawString(46, 92, "Contribution split (estimated):")
     divider(c, 46, 86, W - 92, color=BORDER, thickness=0.3)
     splits = [
-        ("Roméo Maignal",      "≈ 33 %  ·  architecture + Viz 1 & 2", ACCENT),
-        ("Jakub Kielar",       "≈ 33 %  ·  Viz 3 & 4 + data scripts", ACCENT2),
-        ("Nicolas Karmolinski","≈ 34 %  ·  Viz 5 + EDA notebooks",    ACCENT3),
+        ("Roméo Maignal",      "≈ 34 %  ·  skeleton + Viz 1 & 2", ACCENT),
+        ("Jakub Kielar",       "≈ 33 %  ·  Viz 3 & 4",            ACCENT2),
+        ("Nicolas Karmolinski","≈ 33 %  ·  Viz 5 & 6",            ACCENT3),
     ]
     sy = 78
     for name, pct, col in splits:
