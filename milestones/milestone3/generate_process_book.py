@@ -957,25 +957,27 @@ def page_contributions(c):
 
         my -= nh + 10
 
-    # Overall contribution pie-text
-    rounded_rect(c, 35, 40, W - 70, 28, fill_color=SURFACE, stroke_color=BORDER)
+    # Overall contribution split — vertical layout so all three names stay within the box
+    rounded_rect(c, 35, 40, W - 70, 62, fill_color=SURFACE, stroke_color=BORDER)
     c.setFont("Helvetica-Bold", 7.5)
     c.setFillColor(ACCENT)
-    c.drawString(46, 57, "Contribution split (estimated):")
+    c.drawString(46, 92, "Contribution split (estimated):")
+    divider(c, 46, 86, W - 92, color=BORDER, thickness=0.3)
     splits = [
-        ("Roméo Maignal",      "≈ 33 %  (architecture + Viz 1 & 2)", ACCENT),
-        ("Jakub Kielar",       "≈ 33 %  (Viz 3 & 4 + data scripts)", ACCENT2),
-        ("Nicolas Karmolinski","≈ 34 %  (Viz 5 + EDA notebooks)",    ACCENT3),
+        ("Roméo Maignal",      "≈ 33 %  ·  architecture + Viz 1 & 2", ACCENT),
+        ("Jakub Kielar",       "≈ 33 %  ·  Viz 3 & 4 + data scripts", ACCENT2),
+        ("Nicolas Karmolinski","≈ 34 %  ·  Viz 5 + EDA notebooks",    ACCENT3),
     ]
-    sx = 215
+    sy = 78
     for name, pct, col in splits:
-        c.setFont("Helvetica", 7)
+        c.setFont("Helvetica-Bold", 7)
         c.setFillColor(col)
-        c.drawString(sx, 57, f"■  {name}:  ")
-        nw = c.stringWidth(f"■  {name}:  ", "Helvetica", 7)
-        c.setFillColor(WHITE)
-        c.drawString(sx + nw, 57, pct)
-        sx += c.stringWidth(f"■  {name}:  {pct}   ", "Helvetica", 7) + 10
+        c.drawString(46, sy, f"■  {name}:")
+        nw = c.stringWidth(f"■  {name}:", "Helvetica-Bold", 7)
+        c.setFont("Helvetica", 7)
+        c.setFillColor(GREY)
+        c.drawString(46 + nw + 5, sy, pct)
+        sy -= 11
 
 
 # ═══════════════════════════════════════════════════════════════════════════
