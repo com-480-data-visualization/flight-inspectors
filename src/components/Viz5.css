@@ -68,34 +68,68 @@
   margin: 0 2px;
 }
 
-/* ── Stats strip ── */
-.viz5-stats {
-  margin-left: auto;
+/* ── Level toggle group ── */
+.viz5-toggle-group {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.viz5-toggle-btn {
+  height: 30px;
+  padding: 0 12px;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+}
+
+.viz5-toggle-btn:last-child {
+  border-right: none;
+}
+
+.viz5-toggle-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.viz5-toggle-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ── Legend ── */
+.viz5-legend {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  margin-left: auto;
   flex-wrap: wrap;
 }
 
-.viz5-stat-item {
+.viz5-legend-item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.viz5-stat-label {
-  font-size: 10px;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
   color: var(--text-muted);
-  font-family: var(--sans);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 
-.viz5-stat-value {
-  font-size: 13px;
-  font-family: var(--mono);
-  color: var(--accent);
-  font-weight: 600;
+.viz5-legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* ── Chart area ── */
@@ -116,17 +150,28 @@
   font-size: 11px;
   color: var(--text);
   line-height: 1.75;
-  max-width: 210px;
+  max-width: 220px;
   z-index: 10;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.viz5-tt-k {
+.viz5-tt-node {
   font-family: var(--mono);
   font-weight: 600;
   font-size: 12px;
   color: var(--text-h);
   margin-bottom: 2px;
+}
+
+.viz5-tt-route {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-h);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 196px;
 }
 
 .viz5-tt-row {
@@ -138,7 +183,7 @@
   color: var(--text);
 }
 
-/* ── Empty / loading state ── */
+/* ── Empty state ── */
 .viz5-empty {
   position: absolute;
   inset: 0;
@@ -151,8 +196,7 @@
   pointer-events: none;
 }
 
-.viz5-ctrl-sep-dash {
-  color: var(--text-muted);
-  font-size: 12px;
-  flex-shrink: 0;
+/* ── SVG interaction helpers ── */
+.viz5-chart svg {
+  overflow: visible;
 }

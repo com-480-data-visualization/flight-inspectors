@@ -68,68 +68,34 @@
   margin: 0 2px;
 }
 
-/* ── Level toggle group ── */
-.viz6-toggle-group {
-  display: flex;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.viz6-toggle-btn {
-  height: 30px;
-  padding: 0 12px;
-  border: none;
-  border-right: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-muted);
-  font-family: var(--sans);
-  font-size: 13px;
-  cursor: pointer;
-  outline: none;
-  transition: background 0.12s, color 0.12s;
-  white-space: nowrap;
-}
-
-.viz6-toggle-btn:last-child {
-  border-right: none;
-}
-
-.viz6-toggle-btn:hover {
-  background: var(--surface-hover);
-  color: var(--text);
-}
-
-.viz6-toggle-btn.active {
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-weight: 500;
-}
-
-/* ── Legend ── */
-.viz6-legend {
+/* ── Stats strip ── */
+.viz6-stats {
+  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: auto;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
-.viz6-legend-item {
+.viz6-stat-item {
   display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  color: var(--text-muted);
-  white-space: nowrap;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
-.viz6-legend-swatch {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
+.viz6-stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.viz6-stat-value {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--accent);
+  font-weight: 600;
 }
 
 /* ── Chart area ── */
@@ -150,28 +116,17 @@
   font-size: 11px;
   color: var(--text);
   line-height: 1.75;
-  max-width: 220px;
+  max-width: 210px;
   z-index: 10;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-.viz6-tt-node {
+.viz6-tt-k {
   font-family: var(--mono);
   font-weight: 600;
   font-size: 12px;
   color: var(--text-h);
   margin-bottom: 2px;
-}
-
-.viz6-tt-route {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text-h);
-  margin-bottom: 2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 196px;
 }
 
 .viz6-tt-row {
@@ -183,7 +138,7 @@
   color: var(--text);
 }
 
-/* ── Empty state ── */
+/* ── Empty / loading state ── */
 .viz6-empty {
   position: absolute;
   inset: 0;
@@ -196,7 +151,8 @@
   pointer-events: none;
 }
 
-/* ── SVG interaction helpers ── */
-.viz6-chart svg {
-  overflow: visible;
+.viz6-ctrl-sep-dash {
+  color: var(--text-muted);
+  font-size: 12px;
+  flex-shrink: 0;
 }

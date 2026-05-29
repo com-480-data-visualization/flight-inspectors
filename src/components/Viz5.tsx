@@ -7,50 +7,46 @@ import './Viz5.css'
 // Types
 // ---------------------------------------------------------------------------
 
-interface CombinationRecord {
-  decade:       string
-  manufacturer: string
-  airline:      string
-  departure:    string
-  arrival:      string
-  incidents:    number
-  fatalities:   number
-}
+type Level   = 'city' | 'country' | 'continent'
+type Metric  = 'count' | 'fatalities'
 
-interface PoissonData {
-  manufacturers: string[]
-  airlines:      string[]
-  departures:    string[]
-  arrivals:      string[]
-  decades:       string[]
-  combinations:  CombinationRecord[]
-  meta: { yearMin: number; yearMax: number; totalIncidents: number; totalFatalities: number }
+interface FlowRecord  { from: string; to: string; count: number; fatalities: number }
+interface NodeRecord  { id: string; departures: number; arrivals: number; continent?: string; country?: string }
+interface ChordData   {
+  cities: NodeRecord[]; countries: NodeRecord[]; continents: NodeRecord[]
+  flows: { city: FlowRecord[]; country: FlowRecord[]; continent: FlowRecord[] }
 }
 
 // ---------------------------------------------------------------------------
-// Poisson helpers
+// Colors
 // ---------------------------------------------------------------------------
 
-function poissonPMF(lambda: number, k: number): number {
-  if (lambda <= 0) return k === 0 ? 1 : 0
-  const logP = -lambda + k * Math.log(lambda) - logFactorial(k)
-  return Math.exp(logP)
+const CONTINENT_COLORS: Record<string, string> = {
+  'North America': '#a78bfa',
+  'Europe':        '#22d3ee',
+  'Asia':          '#fb923c',
+  'South America': '#4ade80',
+  'Africa':        '#facc15',
+  'Oceania':       '#f472b6',
+  'Unknown':       '#6b7280',
 }
+const PALETTE = [
+  '#a78bfa','#22d3ee','#fb923c','#4ade80','#facc15','#f472b6',
+  '#60a5fa','#f87171','#34d399','#fbbf24','#38bdf8','#c084fc',
+  '#a3e635','#fb7185','#e879f9','#86efac','#93c5fd','#fca5a5',
+]
 
-const _logFactCache: number[] = [0]
-function logFactorial(n: number): number {
-  for (let i = _logFactCache.length; i <= n; i++) {
-    _logFactCache[i] = _logFactCache[i - 1] + Math.log(i)
-  }
-  return _logFactCache[n]
+const CONTINENT_IDX: Record<string,number> = {
+          'North America': 0, 'Europe': 1, 'Asia': 2,
+          'South America': 3, 'Africa': 4, 'Oceania': 5,
+        }
+
+// Darken a hex color for the arrival half of each arc
+function darken(hex: string, f = 0.5): string {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16)
+  const d = (v: number) => Math.round(v*(1-f)).toString(16).padStart(2,'0')
+  return `#${d(r)}${d(g)}${d(b)}`
 }
-
-function kMax(lambda: number): number {
-  if (lambda <= 0) return 6
-  return Math.max(6, Math.ceil(lambda + 4 * Math.sqrt(lambda)) + 1)
-}
-
-const ACCENT = '#a78bfa'
 
 // ---------------------------------------------------------------------------
 // Component
@@ -62,270 +58,303 @@ const Viz5: React.FC = () => {
   const tooltipRef = useRef<HTMLDivElement>(null)
   const chartRef   = useRef<HTMLDivElement>(null)
 
-  const [data,      setData]      = useState<PoissonData | null>(null)
+  const [data,      setData]      = useState<ChordData | null>(null)
   const [chartSize, setChartSize] = useState({ w: 0, h: 0 })
+  const [level,     setLevel]     = useState<Level>('country')
+  const [metric,    setMetric]    = useState<Metric>('count')
+  const [hovered,   setHovered]   = useState<string | null>(null)
+  const [topN,      setTopN]      = useState(20)
 
-  // Filters
-  const [manufacturer, setManufacturer] = useState('Any')
-  const [airline,      setAirline]      = useState('Any')
-  const [departure,    setDeparture]    = useState('Any')
-  const [arrival,      setArrival]      = useState('Any')
-  const [decadeFrom,   setDecadeFrom]   = useState('Any')
-  const [decadeTo,     setDecadeTo]     = useState('Any')
-
-  // Load data
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL}data/crashes_for_poisson.json`)
-      .then(r => r.json())
-      .then((d: PoissonData) => {
-        setData(d)
-        // Default decade range to full span
-        if (d.decades.length) {
-          setDecadeFrom(d.decades[0])
-          setDecadeTo(d.decades[d.decades.length - 1])
-        }
-      })
+    fetch(`${import.meta.env.BASE_URL}data/crashes_for_chord.json`)
+      .then(r => r.json()).then((d: ChordData) => setData(d))
   }, [])
 
-  // ResizeObserver
   useEffect(() => {
-    const el = chartRef.current
-    if (!el) return
+    const el = chartRef.current; if (!el) return
     const ro = new ResizeObserver(entries => {
       const { width, height } = entries[0].contentRect
       setChartSize({ w: Math.floor(width), h: Math.floor(height) })
     })
-    ro.observe(el)
-    return () => ro.disconnect()
+    ro.observe(el); return () => ro.disconnect()
   }, [])
 
-  // ── Filter combinations → compute λ ─────────────────────────────────────
-  const { lambda, totalIncidents, decadesInRange } = useMemo(() => {
-    if (!data) return { lambda: 0, totalIncidents: 0, decadesInRange: 1 }
+  // ── Nodes + flows for current level / topN ────────────────────────────────
+  const { nodes, flows, colorMap } = useMemo(() => {
+    if (!data) return { nodes: [] as NodeRecord[], flows: [] as FlowRecord[], colorMap: new Map<string,string>() }
 
-    // Build decade range
-    const allDecades = data.decades
-    const fromIdx = decadeFrom === 'Any' ? 0 : allDecades.indexOf(decadeFrom)
-    const toIdx   = decadeTo   === 'Any' ? allDecades.length - 1 : allDecades.indexOf(decadeTo)
-    const validDecades = new Set(
-      allDecades.slice(
-        Math.max(0, fromIdx),
-        Math.min(allDecades.length - 1, toIdx) + 1
-      )
-    )
-    const numDecades = validDecades.size
+    const rawNodes = data[level === 'city' ? 'cities' : level === 'country' ? 'countries' : 'continents']
+    const rawFlows = data.flows[level]
 
-    const total = data.combinations.reduce((sum, c) => {
-      if (!validDecades.has(c.decade))                              return sum
-      if (manufacturer !== 'Any' && c.manufacturer !== manufacturer) return sum
-      if (airline      !== 'Any' && c.airline      !== airline)       return sum
-      if (departure    !== 'Any' && c.departure    !== departure)     return sum
-      if (arrival      !== 'Any' && c.arrival      !== arrival)       return sum
-      return sum + c.incidents
-    }, 0)
-
-    // λ = incidents per year (each decade = 10 years)
-    const totalYears = numDecades * 10
-    return {
-      lambda:         total / Math.max(totalYears, 1),
-      totalIncidents: total,
-      decadesInRange: numDecades,
+    // Rank nodes by total flow involvement
+    const rank = new Map<string,number>()
+    for (const f of rawFlows) {
+      rank.set(f.from, (rank.get(f.from) ?? 0) + f[metric])
+      rank.set(f.to,   (rank.get(f.to)   ?? 0) + f[metric])
     }
-  }, [data, decadeFrom, decadeTo, manufacturer, airline, departure, arrival])
+    const sorted   = [...rawNodes].filter(n => rank.has(n.id))
+      .sort((a,b) => (rank.get(b.id) ?? 0) - (rank.get(a.id) ?? 0)).slice(0, topN)
+    const validIds = new Set(sorted.map(n => n.id))
+    const filtered = rawFlows.filter(f => validIds.has(f.from) && validIds.has(f.to))
 
-  // ── D3 chart ─────────────────────────────────────────────────────────────
+    // Color map
+    const colorMap = new Map<string,string>()
+    if (level === 'continent') {
+      sorted.forEach(n => colorMap.set(n.id, CONTINENT_COLORS[n.id] ?? CONTINENT_COLORS['Unknown']))
+    } else if (level === 'country') {
+      sorted.forEach(n => colorMap.set(n.id, CONTINENT_COLORS[(n as any).continent ?? 'Unknown'] ?? CONTINENT_COLORS['Unknown']))
+    } else {
+      const contIdx = new Map<string,number>()
+      sorted.forEach(n => {
+        const cont = (n as any).continent ?? 'Unknown'
+        const base = PALETTE.indexOf(CONTINENT_COLORS[cont] ?? '#6b7280')
+        const idx  = contIdx.get(cont) ?? 0; contIdx.set(cont, idx+1)
+        colorMap.set(n.id, PALETTE[(base + idx) % PALETTE.length])
+        // then:
+        // const base = (CONTINENT_IDX[cont] ?? 6) * 3
+        // colorMap.set(n.id, PALETTE[(base + idx) % PALETTE.length])
+      })
+    }
+    return { nodes: sorted, flows: filtered, colorMap }
+  }, [data, level, metric, topN])
+
+  // ── D3 chord layout + drawing ────────────────────────────────────────────
   useEffect(() => {
-    if (!svgRef.current || !chartRef.current) return
-    const { w: totalWidth, h: totalHeight } = chartSize
-    if (totalWidth <= 0 || totalHeight <= 0) return
-
-    const margin = { top: 18, right: 20, bottom: 46, left: 54 }
-    const width  = totalWidth  - margin.left - margin.right
-    const height = totalHeight - margin.top  - margin.bottom
-    if (width <= 0 || height <= 0) return
+    if (!svgRef.current || !nodes.length || !flows.length) return
+    const { w: W, h: H } = chartSize
+    if (W <= 0 || H <= 0) return
 
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
-    svg.attr('width', totalWidth).attr('height', totalHeight)
+    svg.attr('width', W).attr('height', H)
 
-    const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`)
+    const cx = W/2, cy = H/2
+    const labelMargin = Math.min(W,H) * 0.22
+    const outerR = Math.min(W,H)/2 - labelMargin
+    if (outerR < 40) return
+    const ARC_W  = Math.max(8, outerR * 0.07)
+    const innerR = outerR - ARC_W
 
-    const km      = kMax(lambda)
-    const kValues = d3.range(0, km + 1)
-    const pmfData = kValues.map(k => ({ k, p: poissonPMF(lambda, k) }))
-
-    const xScale = d3.scaleBand()
-      .domain(kValues.map(String))
-      .range([0, width])
-      .padding(kValues.length > 30 ? 0.08 : 0.15)
-
-    const maxP = d3.max(pmfData, d => d.p) ?? 0.01
-    const yScale = d3.scaleLinear()
-      .domain([0, maxP * 1.18])
-      .range([height, 0])
-      .nice()
-
-    // Grid
-    g.append('g')
-      .selectAll('line')
-      .data(yScale.ticks(5))
-      .join('line')
-      .attr('x1', 0).attr('x2', width)
-      .attr('y1', (d: number) => yScale(d))
-      .attr('y2', (d: number) => yScale(d))
-      .attr('stroke', 'var(--border)')
-      .attr('stroke-dasharray', '3,3')
-      .attr('stroke-width', 0.8)
-
-    // Smooth area + line
-    if (lambda > 0 && kValues.length > 1) {
-      const steps = 300
-      const bw    = xScale.bandwidth()
-      const curvePoints: Array<{ x: number; p: number }> = []
-      for (let i = 0; i <= steps; i++) {
-        const kf     = i * km / steps
-        const kFloor = Math.floor(kf)
-        const kCeil  = Math.min(Math.ceil(kf), km)
-        const t      = kf - kFloor
-        const p      = poissonPMF(lambda, kFloor) * (1 - t) + poissonPMF(lambda, kCeil) * t
-        const xPos   = (xScale(String(kFloor)) ?? 0) + bw * (0.5 + t)
-        curvePoints.push({ x: xPos, p })
-      }
-
-      svg.select('defs').remove()
-      const defs = svg.append('defs')
-      defs.append('linearGradient')
-        .attr('id', 'viz5-grad')
-        .attr('x1', '0').attr('y1', '0').attr('x2', '0').attr('y2', '1')
-        .selectAll('stop')
-        .data([{ offset: '0%', opacity: 0.26 }, { offset: '100%', opacity: 0.02 }])
-        .join('stop')
-        .attr('offset',       d => d.offset)
-        .attr('stop-color',   ACCENT)
-        .attr('stop-opacity', d => d.opacity)
-
-      const area = d3.area<{ x: number; p: number }>()
-        .x(d => d.x).y0(height).y1(d => yScale(d.p))
-        .curve(d3.curveCatmullRom.alpha(0.5))
-
-      const line = d3.line<{ x: number; p: number }>()
-        .x(d => d.x).y(d => yScale(d.p))
-        .curve(d3.curveCatmullRom.alpha(0.5))
-
-      g.append('path').datum(curvePoints)
-        .attr('d', area).attr('fill', 'url(#viz5-grad)')
-      g.append('path').datum(curvePoints)
-        .attr('d', line).attr('fill', 'none')
-        .attr('stroke', ACCENT).attr('stroke-width', 2).attr('opacity', 0.7)
+    // ── Build N×N matrix for d3.chordDirected ─────────────────────────────
+    // matrix[i][j] = flow from node i → node j
+    const N       = nodes.length
+    const idxMap  = new Map<string,number>(nodes.map((n,i) => [n.id, i]))
+    const matrix  = Array.from({length: N}, () => new Array(N).fill(0))
+    for (const f of flows) {
+      const i = idxMap.get(f.from), j = idxMap.get(f.to)
+      if (i !== undefined && j !== undefined) matrix[i][j] += f[metric]
     }
 
-    // Bars
-    type BarD = { k: number; p: number }
-    g.selectAll('.viz5-bar')
-      .data(pmfData)
-      .join('rect')
-      .attr('class', 'viz5-bar')
-      .attr('x',      (d: BarD) => xScale(String(d.k)) ?? 0)
-      .attr('y',      (d: BarD) => yScale(d.p))
-      .attr('width',  xScale.bandwidth())
-      .attr('height', (d: BarD) => Math.max(0, height - yScale(d.p)))
-      .attr('fill',   ACCENT).attr('rx', 2).attr('opacity', 0.42)
-      .on('mouseover', (event: MouseEvent, d: BarD) => {
-        d3.select(event.currentTarget as SVGRectElement).attr('opacity', 0.72)
-        const tooltip = tooltipRef.current
-        if (!tooltip || !chartRef.current) return
-        tooltip.innerHTML = `
-          <div class="viz5-tt-k">k = ${d.k} crash${d.k !== 1 ? 'es' : ''} / yr</div>
-          <div class="viz5-tt-row">P(X = ${d.k}) = <b>${(d.p * 100).toFixed(3)}%</b></div>
-          <div class="viz5-tt-row">λ = ${lambda.toFixed(3)}</div>
-        `
-        tooltip.style.display = 'block'
-        const rect = chartRef.current.getBoundingClientRect()
-        tooltip.style.left = `${Math.min(event.clientX - rect.left + 14, totalWidth - 220)}px`
-        tooltip.style.top  = `${Math.max(event.clientY - rect.top  - 70, 4)}px`
-      })
-      .on('mousemove', (event: MouseEvent) => {
-        const tooltip = tooltipRef.current
-        if (!tooltip || !chartRef.current) return
-        const rect = chartRef.current.getBoundingClientRect()
-        tooltip.style.left = `${Math.min(event.clientX - rect.left + 14, totalWidth - 220)}px`
-        tooltip.style.top  = `${Math.max(event.clientY - rect.top  - 70, 4)}px`
-      })
-      .on('mouseout', (event: MouseEvent) => {
-        d3.select(event.currentTarget as SVGRectElement).attr('opacity', 0.42)
-        if (tooltipRef.current) tooltipRef.current.style.display = 'none'
-      })
+    // ── d3.chordDirected layout ────────────────────────────────────────────
+    // padAngle: gap between node arcs
+    // sortSubgroups: within each group, outgoing (departures) come before
+    //   incoming (arrivals) because chordDirected puts sources first
+    const chordLayout = (d3 as any).chordDirected
+      ? (d3 as any).chordDirected()
+          .padAngle(0.025)
+          .sortSubgroups(d3.descending)
+      : d3.chord()
+          .padAngle(0.025)
+          .sortSubgroups(d3.descending)
 
-    // λ mean line
-    if (lambda > 0) {
-      const lambdaXBand = xScale(String(Math.round(lambda)))
-      if (lambdaXBand !== undefined) {
-        const lambdaX = lambdaXBand + xScale.bandwidth() / 2
-        g.append('line')
-          .attr('x1', lambdaX).attr('x2', lambdaX).attr('y1', 0).attr('y2', height)
-          .attr('stroke', ACCENT).attr('stroke-width', 1.5)
-          .attr('stroke-dasharray', '4,3').attr('opacity', 0.9)
-        g.append('text')
-          .attr('x', lambdaX + 5).attr('y', 12)
-          .attr('fill', ACCENT).attr('font-size', '10px').attr('font-family', 'var(--mono)')
-          .text(`λ = ${lambda.toFixed(2)}`)
-      }
+    const chords = chordLayout(matrix)
+
+    // ── Ribbon generator with arrowhead ────────────────────────────────────
+    // ribbonArrow puts the arrowhead at the TARGET (arrival) end
+    const ribbonGen = (d3 as any).ribbonArrow
+      ? (d3 as any).ribbonArrow()
+          .radius(innerR)
+          .headRadius(Math.max(4, ARC_W * 0.55))
+      : d3.ribbon().radius(innerR)
+
+    // ── Arc generator for the outer ring ──────────────────────────────────
+    const arcGen = d3.arc<d3.ChordGroup>()
+      .innerRadius(innerR)
+      .outerRadius(outerR)
+
+    const g = svg.append('g').attr('transform', `translate(${cx},${cy})`)
+
+    // ── 1. Draw ribbons ────────────────────────────────────────────────────
+    // Ribbons drawn first (below arcs)
+    const ribbonGroup = g.append('g').attr('class', 'Viz5-ribbons')
+
+    ribbonGroup.selectAll('path')
+      .data(chords)
+      .join('path')
+        .attr('d', (d: any) => ribbonGen(d))
+        .attr('fill', (d: any) => colorMap.get(nodes[d.source.index]?.id) ?? '#888')
+        .attr('fill-opacity', (d: any) => {
+          if (hovered === null) return 0.35
+          const fromId = nodes[d.source.index]?.id
+          const toId   = nodes[d.target.index]?.id
+          return (hovered === fromId || hovered === toId) ? 0.75 : 0.04
+        })
+        .attr('stroke', (d: any) => colorMap.get(nodes[d.source.index]?.id) ?? '#888')
+        .attr('stroke-width', 0.4)
+        .attr('stroke-opacity', 0.4)
+        .style('cursor', 'pointer')
+        .on('mouseover', (event: MouseEvent, d: any) => {
+          const fromId = nodes[d.source.index]?.id ?? ''
+          const toId   = nodes[d.target.index]?.id ?? ''
+          const flow   = flows.find(f => f.from === fromId && f.to === toId)
+          const tt = tooltipRef.current; if (!tt || !chartRef.current) return
+          tt.innerHTML = `
+            <div class="viz5-tt-route">${fromId} → ${toId}</div>
+            <div class="viz5-tt-row">Crashes: <b>${flow?.count ?? d.source.value}</b></div>
+            <div class="viz5-tt-row">Fatalities: <b>${flow?.fatalities ?? '–'}</b></div>
+          `
+          tt.style.display = 'block'
+          const rect = chartRef.current.getBoundingClientRect()
+          tt.style.left = `${Math.min(event.clientX - rect.left + 12, W - 215)}px`
+          tt.style.top  = `${Math.max(event.clientY - rect.top  - 60, 4)}px`
+        })
+        .on('mousemove', (event: MouseEvent) => {
+          const tt = tooltipRef.current; if (!tt || !chartRef.current) return
+          const rect = chartRef.current.getBoundingClientRect()
+          tt.style.left = `${Math.min(event.clientX - rect.left + 12, W - 215)}px`
+          tt.style.top  = `${Math.max(event.clientY - rect.top  - 60, 4)}px`
+        })
+        .on('mouseout', () => { if (tooltipRef.current) tooltipRef.current.style.display = 'none' })
+
+    // ── 2. Draw outer arc ring — split dep (bright) / arr (dark) ──────────
+    // In d3.chordDirected the SOURCE slots sit at the START of each group arc
+    // and TARGET slots at the END.  We colour them differently.
+    const arcGroup = g.append('g').attr('class', 'Viz5-arcs')
+
+    // Gather per-group source and target angular extents
+    interface GroupSplit { depEnd: number; arrStart: number }
+    const groupSplit = new Map<number, GroupSplit>()
+
+    for (const ch of chords as any[]) {
+      const si = ch.source.index, ti = ch.target.index
+      // source slots: ch.source.startAngle … ch.source.endAngle  → departure
+      // target slots: ch.target.startAngle … ch.target.endAngle  → arrival
+      // We need the boundary: max of all source endAngles for this group
+      //   and min of all target startAngles for this group
+      const cur = groupSplit.get(si) ?? { depEnd: -Infinity, arrStart: Infinity }
+      groupSplit.set(si, {
+        depEnd:    Math.max(cur.depEnd,    ch.source.endAngle),
+        arrStart:  cur.arrStart,
+      })
+      const curT = groupSplit.get(ti) ?? { depEnd: -Infinity, arrStart: Infinity }
+      groupSplit.set(ti, {
+        depEnd:    curT.depEnd,
+        arrStart:  Math.min(curT.arrStart, ch.target.startAngle),
+      })
     }
 
-    // X axis
-    const tickEvery = kValues.length > 40 ? 10 : kValues.length > 20 ? 5 : kValues.length > 10 ? 2 : 1
-    const xG = g.append('g').attr('transform', `translate(0,${height})`)
-      .call(
-        d3.axisBottom(xScale)
-          .tickValues(kValues.filter((_: number, i: number) => i % tickEvery === 0).map(String))
-          .tickSize(3)
-      )
-    xG.select('.domain').attr('stroke', 'var(--border)')
-    xG.selectAll('line').attr('stroke', 'var(--border)')
-    xG.selectAll('text').attr('fill', 'var(--text-muted)').attr('font-size', '10px').attr('dy', '1.2em')
-    g.append('text')
-      .attr('x', width / 2).attr('y', height + 42).attr('text-anchor', 'middle')
-      .attr('fill', 'var(--text-muted)').attr('font-size', '11px').attr('font-family', 'var(--sans)')
-      .text('Number of crashes per year (k)')
+    for (const group of (chords as any).groups as d3.ChordGroup[]) {
+      const nodeId = nodes[group.index]?.id
+      const col    = colorMap.get(nodeId) ?? '#888'
+      const split  = groupSplit.get(group.index)
+      const dim    = hovered === null ? 1 : hovered === nodeId ? 1 : 0.22
 
-    // Y axis
-    const yG = g.append('g').call(
-      d3.axisLeft(yScale).ticks(5).tickSize(3)
-        .tickFormat(d => `${((d as number) * 100).toFixed(1)}%`)
-    )
-    yG.select('.domain').attr('stroke', 'var(--border)')
-    yG.selectAll('line').attr('stroke', 'var(--border)')
-    yG.selectAll('text').attr('fill', 'var(--text-muted)').attr('font-size', '10px')
-    g.append('text')
-      .attr('transform', 'rotate(-90)').attr('x', -height / 2).attr('y', -46)
-      .attr('text-anchor', 'middle').attr('fill', 'var(--text-muted)')
-      .attr('font-size', '11px').attr('font-family', 'var(--sans)').text('Probability')
+      // Determine boundary between dep and arr sub-arcs
+      const depEnd   = (split && split.depEnd   > group.startAngle) ? split.depEnd   : group.endAngle
+      const arrStart = (split && split.arrStart < group.endAngle)   ? split.arrStart : group.endAngle
 
-  }, [lambda, chartSize])
+      // Use midpoint if both overlap (single-direction node)
+      const boundary = (depEnd <= arrStart)
+        ? (depEnd + arrStart) / 2
+        : (group.startAngle + group.endAngle) / 2
 
-  // Derived stats
-  const p0    = poissonPMF(lambda, 0)
-  const modeK = lambda <= 0 ? 0 : Math.max(0, Math.floor(lambda))
-  const modeP = poissonPMF(lambda, modeK)
+      // Departure sub-arc (bright, first half)
+      if (boundary > group.startAngle) {
+        arcGroup.append('path')
+          .attr('d', arcGen({ ...group, startAngle: group.startAngle, endAngle: boundary } as any))
+          .attr('fill', col)
+          .attr('fill-opacity', dim * 0.9)
+          .attr('stroke', 'var(--bg)').attr('stroke-width', 0.8)
+          .style('pointer-events', 'none')
+      }
 
-  // Valid decade range for the "To" selector (must be ≥ decadeFrom)
-  const decadeFromOptions = data?.decades ?? []
-  const decadeToOptions   = data
-    ? data.decades.filter(d => decadeFrom === 'Any' || d >= decadeFrom)
-    : []
+      // Arrival sub-arc (darkened, second half)
+      if (group.endAngle > boundary) {
+        arcGroup.append('path')
+          .attr('d', arcGen({ ...group, startAngle: boundary, endAngle: group.endAngle } as any))
+          .attr('fill', darken(col))
+          .attr('fill-opacity', dim * 0.9)
+          .attr('stroke', 'var(--bg)').attr('stroke-width', 0.8)
+          .style('pointer-events', 'none')
+      }
+
+      // Invisible hit-target for hover (full arc)
+      arcGroup.append('path')
+        .attr('d', arcGen(group))
+        .attr('fill', 'transparent').attr('stroke', 'none')
+        .style('cursor', 'pointer')
+        .datum({ nodeId, group })
+        .on('mouseover', (event: MouseEvent, d: any) => {
+          setHovered(d.nodeId)
+          const tt = tooltipRef.current; if (!tt || !chartRef.current) return
+          const totalOut = flows.filter(f => f.from === d.nodeId).reduce((s,f) => s + f[metric], 0)
+          const totalIn  = flows.filter(f => f.to   === d.nodeId).reduce((s,f) => s + f[metric], 0)
+          tt.innerHTML = `
+            <div class="viz5-tt-node">${d.nodeId}</div>
+            <div class="viz5-tt-row">Departures: <b>${totalOut}</b></div>
+            <div class="viz5-tt-row">Arrivals: <b>${totalIn}</b></div>
+          `
+          tt.style.display = 'block'
+          const rect = chartRef.current!.getBoundingClientRect()
+          tt.style.left = `${Math.min(event.clientX - rect.left + 12, W - 215)}px`
+          tt.style.top  = `${Math.max(event.clientY - rect.top  - 60, 4)}px`
+        })
+        .on('mousemove', (event: MouseEvent) => {
+          const tt = tooltipRef.current; if (!tt || !chartRef.current) return
+          const rect = chartRef.current.getBoundingClientRect()
+          tt.style.left = `${Math.min(event.clientX - rect.left + 12, W - 215)}px`
+          tt.style.top  = `${Math.max(event.clientY - rect.top  - 60, 4)}px`
+        })
+        .on('mouseout', () => { setHovered(null); if (tooltipRef.current) tooltipRef.current.style.display = 'none' })
+    }
+
+    // ── 3. Labels ──────────────────────────────────────────────────────────
+    const LABEL_R  = outerR + 8
+    const MIN_SPAN = (2 * Math.PI) / 70
+    const labelGrp = g.append('g').style('pointer-events','none')
+
+    for (const group of (chords as any).groups as d3.ChordGroup[]) {
+      const span = group.endAngle - group.startAngle
+      if (span < MIN_SPAN) continue
+      const nodeId = nodes[group.index]?.id ?? ''
+      const midA   = (group.startAngle + group.endAngle) / 2
+      const x      = LABEL_R * Math.cos(midA - Math.PI/2)
+      const y      = LABEL_R * Math.sin(midA - Math.PI/2)
+      const deg    = ((midA - Math.PI/2) * 180) / Math.PI
+      const flip   = deg > 90 && deg < 270
+      let label    = nodeId; if (label.length > 16) label = label.slice(0,14) + '…'
+
+      labelGrp.append('text')
+        .attr('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${(flip ? deg+180 : deg).toFixed(1)})`)
+        .attr('text-anchor', flip ? 'end' : 'start')
+        .attr('dominant-baseline', 'central')
+        .attr('font-size', level === 'city' ? '9px' : level === 'country' ? '10px' : '12px')
+        .attr('font-family', 'var(--sans)')
+        .attr('fill', colorMap.get(nodeId) ?? 'var(--text-muted)')
+        .attr('opacity', hovered === null ? 1 : hovered === nodeId ? 1 : 0.3)
+        .text(label)
+    }
+
+  }, [nodes, flows, colorMap, chartSize, hovered, level, metric])
+
+  // ── Legend ────────────────────────────────────────────────────────────────
+ const legendEntries = level === 'city'
+    ? []
+    : Object.entries(CONTINENT_COLORS)
+        .filter(([k]) => k !== 'Unknown')
+        .map(([label, color]) => ({ label, color }))
 
   return (
-    <div className="section" id="section5">
+    <div className="section" id="section6">
       <div className="viz-container">
         <div className="paragraph">
           <p className="section-badge">/ Visualization 05</p>
-          <h1 className="viz-title">Modelling your flight's crash risk</h1>
+          <h1 className="viz-title">Where crashes happen: origin–destination flows</h1>
           <p>
-            Using a Poisson process, we model crashes as a rate λ — the mean
-            number of incidents per year for a filtered subset of the data.
-            The chart shows the full probability distribution P(X = k): the
-            chance of exactly k crashes occurring in any given year. Filter by
-            manufacturer, airline, departure city, arrival city, and decade range.
+            Each arc segment represents a city, country, or continent. The bright
+            portion marks departures; the darker portion marks arrivals. Ribbon
+            thickness encodes crash count. Arrowheads point toward the arrival end.
+            Hover a node or ribbon for details.
           </p>
         </div>
 
@@ -333,107 +362,50 @@ const Viz5: React.FC = () => {
           <button className="fullscreen-btn" aria-label="Toggle Fullscreen" onClick={toggle}>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
               {isFullscreen ? <>
-                <path d="M8 3v3a2 2 0 0 1-2 2H3"/>
-                <path d="M21 8h-3a2 2 0 0 1-2-2V3"/>
-                <path d="M3 16h3a2 2 0 0 1 2 2v3"/>
-                <path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
+                <path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/>
+                <path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
               </> : <>
-                <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
-                <path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
-                <path d="M3 16v3a2 2 0 0 0 2 2h3"/>
-                <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
               </>}
             </svg>
           </button>
 
           <div className="viz5-inner">
-            {/* ── Controls ── */}
             <div className="viz5-controls">
-
-              <span className="viz5-ctrl-label">Mfr.</span>
-              <select className="viz5-ctrl-select" value={manufacturer} onChange={e => setManufacturer(e.target.value)}>
-                <option value="Any">Any</option>
-                {data?.manufacturers.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-
-              <span className="viz5-ctrl-label">Airline</span>
-              <select className="viz5-ctrl-select" value={airline} onChange={e => setAirline(e.target.value)}>
-                <option value="Any">Any</option>
-                {data?.airlines.map(a => <option key={a} value={a}>{a}</option>)}
-              </select>
-
+              <div className="viz5-toggle-group">
+                {(['city','country','continent'] as Level[]).map(l => (
+                  <button key={l} className={`viz5-toggle-btn${level===l?' active':''}`} onClick={() => setLevel(l)}>
+                    {l.charAt(0).toUpperCase()+l.slice(1)}
+                  </button>
+                ))}
+              </div>
               <div className="viz5-ctrl-sep" />
-
-              <span className="viz5-ctrl-label">Dep.</span>
-              <select className="viz5-ctrl-select" value={departure} onChange={e => setDeparture(e.target.value)}>
-                <option value="Any">Any</option>
-                {data?.departures.map(d => <option key={d} value={d}>{d}</option>)}
+              <span className="viz5-ctrl-label">Metric</span>
+              <select className="viz5-ctrl-select" value={metric} onChange={e => setMetric(e.target.value as Metric)}>
+                <option value="count">Incidents</option>
+                <option value="fatalities">Fatalities</option>
               </select>
-
-              <span className="viz5-ctrl-label">Arr.</span>
-              <select className="viz5-ctrl-select" value={arrival} onChange={e => setArrival(e.target.value)}>
-                <option value="Any">Any</option>
-                {data?.arrivals.map(a => <option key={a} value={a}>{a}</option>)}
+              <span className="viz5-ctrl-label">Show top</span>
+              <select className="viz5-ctrl-select" value={topN} onChange={e => setTopN(Number(e.target.value))}>
+                {[10,15,20,30,50].map(n => <option key={n} value={n}>{n}</option>)}
               </select>
-
-              <div className="viz5-ctrl-sep" />
-
-              <select
-                className="viz5-ctrl-select"
-                value={decadeFrom}
-                onChange={e => {
-                  setDecadeFrom(e.target.value)
-                  // ensure decadeTo stays ≥ decadeFrom
-                  if (decadeTo !== 'Any' && e.target.value !== 'Any' && decadeTo < e.target.value)
-                    setDecadeTo(e.target.value)
-                }}
-              >
-                <option value="Any">Any decade</option>
-                {decadeFromOptions.map(d => <option key={d} value={d}>{d}</option>)}
-              </select>
-              <span className="viz5-ctrl-sep-dash">–</span>
-              <select
-                className="viz5-ctrl-select"
-                value={decadeTo}
-                onChange={e => setDecadeTo(e.target.value)}
-              >
-                <option value="Any">Any decade</option>
-                {decadeToOptions.map(d => <option key={d} value={d}>{d}</option>)}
-              </select>
-
-              {/* Stats */}
-              <div className="viz5-stats">
-                <div className="viz5-stat-item">
-                  <span className="viz5-stat-label">λ / yr</span>
-                  <span className="viz5-stat-value">{lambda.toFixed(2)}</span>
-                </div>
-                <div className="viz5-stat-item">
-                  <span className="viz5-stat-label">Incidents</span>
-                  <span className="viz5-stat-value">{totalIncidents}</span>
-                </div>
-                <div className="viz5-stat-item">
-                  <span className="viz5-stat-label">P(0)</span>
-                  <span className="viz5-stat-value">{(p0 * 100).toFixed(1)}%</span>
-                </div>
-                <div className="viz5-stat-item">
-                  <span className="viz5-stat-label">P(≥1)</span>
-                  <span className="viz5-stat-value">{((1 - p0) * 100).toFixed(1)}%</span>
-                </div>
-                <div className="viz5-stat-item">
-                  <span className="viz5-stat-label">Mode k</span>
-                  <span className="viz5-stat-value">{modeK} ({(modeP * 100).toFixed(1)}%)</span>
-                </div>
+              <span className="viz5-ctrl-label" style={{marginLeft:-2}}>nodes</span>
+              <div className="viz5-legend">
+                {legendEntries.map(({label,color}) => (
+                  <span key={label} className="viz5-legend-item">
+                    <span className="viz5-legend-swatch" style={{background:color}}/>
+                    {label}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* ── Chart ── */}
             <div className="viz5-chart" ref={chartRef}>
-              <svg ref={svgRef} style={{ display: 'block' }} />
-              {totalIncidents === 0 && data && (
-                <div className="viz5-empty">No data matches the current filters.</div>
-              )}
+              <svg ref={svgRef} style={{display:'block'}}/>
               {!data && <div className="viz5-empty">Loading…</div>}
-              <div ref={tooltipRef} className="viz5-tooltip" style={{ display: 'none' }} />
+              {data && nodes.length === 0 && <div className="viz5-empty">No data for current filters.</div>}
+              <div ref={tooltipRef} className="viz5-tooltip" style={{display:'none'}}/>
             </div>
           </div>
         </div>
