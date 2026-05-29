@@ -349,7 +349,7 @@ const Viz5: React.FC = () => {
       <div className="viz-container">
         <div className="paragraph">
           <p className="section-badge">/ Visualization 05</p>
-          <h1 className="viz-title">Where crashes happen: origin–destination flows</h1>
+          <h1 className="viz-title">Origin–destination flows: the most perilous routes</h1>
           <p>
             Each arc segment represents a city, country, or continent. The bright
             portion marks departures; the darker portion marks arrivals. Ribbon
