@@ -100,7 +100,7 @@ const viz6: React.FC = () => {
   }, [])
 
   // ── Filter combinations → compute λ ─────────────────────────────────────
-  const { lambda, totalIncidents, decadesInRange } = useMemo(() => {
+  const { lambda, totalIncidents} = useMemo(() => {
     if (!data) return { lambda: 0, totalIncidents: 0, decadesInRange: 1 }
 
     // Build decade range
@@ -303,8 +303,6 @@ const viz6: React.FC = () => {
 
   // Derived stats
   const p0    = poissonPMF(lambda, 0)
-  const modeK = lambda <= 0 ? 0 : Math.max(0, Math.floor(lambda))
-  const modeP = poissonPMF(lambda, modeK)
 
   // Valid decade range for the "To" selector (must be ≥ decadeFrom)
   const decadeFromOptions = data?.decades ?? []

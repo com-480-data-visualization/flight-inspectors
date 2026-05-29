@@ -37,12 +37,12 @@ function App() {
         <Viz3 />
       </section>
 
-      <section id="section4">
-        <Viz4 />
-      </section>
-
       <section id="section5">
         <Viz5 />
+      </section>
+
+      <section id="section4">
+        <Viz4 />
       </section>
 
       <section id="section6">

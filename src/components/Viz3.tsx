@@ -383,11 +383,9 @@ const Viz3: React.FC = () => {
           <p className="section-badge">/ Visualization 03</p>
           <h1 className="viz-title">Where in the world do planes crash?</h1>
           <p>
-            Plane crashes are not distributed evenly across the globe. The choropleth map shades each
+            Plane crashes are not distributed evenly across the globe. The choropleth map highlights this by shading each
             country by its incident count, while the treemap below shows the same data grouped by continent,
-            making the relative scale of each region easier to read. The United States alone accounts for
-            roughly a fifth of all recorded incidents, partly because of its vastly larger volume of
-            domestic flights. Switch between incidents and fatalities, narrow the year range, and hover any
+            making the relative scale of each region easier to read. Switch between incidents and fatalities, narrow the year range, and hover any
             country to see the figure highlighted in both views at once.
           </p>
         </div>

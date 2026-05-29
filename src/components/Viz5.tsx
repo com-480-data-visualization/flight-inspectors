@@ -36,11 +36,6 @@ const PALETTE = [
   '#a3e635','#fb7185','#e879f9','#86efac','#93c5fd','#fca5a5',
 ]
 
-const CONTINENT_IDX: Record<string,number> = {
-          'North America': 0, 'Europe': 1, 'Asia': 2,
-          'South America': 3, 'Africa': 4, 'Oceania': 5,
-        }
-
 // Darken a hex color for the arrival half of each arc
 function darken(hex: string, f = 0.5): string {
   const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16)
@@ -351,6 +346,7 @@ const Viz5: React.FC = () => {
           <p className="section-badge">/ Visualization 05</p>
           <h1 className="viz-title">Origin–destination flows: the most perilous routes</h1>
           <p>
+            
             Each arc segment represents a city, country, or continent. The bright
             portion marks departures; the darker portion marks arrivals. Ribbon
             thickness encodes crash count. Arrowheads point toward the arrival end.
