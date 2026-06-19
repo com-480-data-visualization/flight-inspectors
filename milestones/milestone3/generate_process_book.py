@@ -141,7 +141,7 @@ def accent_bar(c, x, y, h=28, w=3, color=ACCENT):
 def page_number(c, n):
     c.setFont("Helvetica", 7)
     c.setFillColor(GREY)
-    txt = f"{n} / 8"
+    txt = f"{n} / 9"
     tw = c.stringWidth(txt, "Helvetica", 7)
     c.drawString(W / 2 - tw / 2, 18, txt)
 
@@ -737,19 +737,6 @@ def page_viz34(c):
                   max_width=W - 313, line_height=10)
         ny2 -= 46
 
-    # Chord diagram note (deprioritised)
-    img5 = os.path.join(ASSETS, "directed_chord_visualization.png")
-    rounded_rect(c, 35, H - 600, W - 70, 62, fill_color=SURFACE, stroke_color=LGREY)
-    draw_image(c, img5, 40, H - 598, 55, 56)
-    c.setFont("Helvetica-Bold", 8)
-    c.setFillColor(GREY)
-    c.drawString(105, H - 545, "Planned: Directed chord diagram")
-    body_text(c, 105, H - 558,
-              "An early sketch proposed a directed chord diagram mapping crash flows "
-              "between world regions. This was deprioritised in Milestone 3 in favour "
-              "of completing the globe and Poisson model, which better served our core "
-              "research questions. The placeholder (Viz 6) remains as a future extension.",
-              size=7, color=GREY, max_width=W - 145, line_height=10)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -848,14 +835,92 @@ def page_viz5(c):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PAGE 8 – PEER ASSESSMENT & CONTRIBUTIONS
+# PAGE 8 – VIZ 6  (Directed chord diagram)
 # ═══════════════════════════════════════════════════════════════════════════
-def page_contributions(c):
+def page_viz6(c):
     fill_bg(c)
     footer_rule(c)
     page_number(c, 8)
 
-    badge(c, 35, H - 38, "/ 07  TEAM & PEER ASSESSMENT", color=ACCENT)
+    badge(c, 35, H - 38, "/ 07  VISUALIZATION 6  ·  NICOLAS KARMOLINSKI", color=ACCENT2)
+    heading(c, 35, H - 68, "Directed chord diagram", size=22)
+    divider(c, 35, H - 76, W - 70)
+
+    body_text(c, 35, H - 96,
+              "Visualization 6 maps crash flows between world regions as a directed "
+              "chord diagram. Each arc connects an origin region to a destination "
+              "region, with width proportional to the number of crashes on that route. "
+              "The layout makes it easy to spot which regions are most linked by "
+              "fatal incidents.",
+              size=8, color=WHITE, max_width=W - 70, line_height=12)
+
+    # Sketch
+    img_c = os.path.join(ASSETS, "directed_chord_visualization.png")
+    rounded_rect(c, 35, H - 272, 200, 148, fill_color=SURFACE, stroke_color=BORDER)
+    draw_image(c, img_c, 42, H - 268, 186, 138)
+    label(c, 35, H - 280, "Milestone 2 sketch - directed chord diagram with regional crash flows", color=GREY)
+
+    # Design box
+    rounded_rect(c, 248, H - 272, W - 283, 148, fill_color=SURFACE, stroke_color=BORDER)
+    accent_bar(c, 248, H - 272, h=148, w=3, color=ACCENT2)
+    c.setFont("Helvetica-Bold", 8.5)
+    c.setFillColor(ACCENT2)
+    c.drawString(258, H - 140, "Design overview")
+    body_text(c, 258, H - 154,
+              "World regions are placed as segments on a circle. Directed chords "
+              "connect origin to destination, thickness encoding crash-flow volume. "
+              "D3 chord layout handles angular positioning from the flow matrix. "
+              "Colors follow the continent scheme used in Viz 3.",
+              size=7.5, color=GREY, max_width=W - 298, line_height=11)
+
+    subheading(c, 35, H - 296, "Implementation details", size=9, color=ACCENT2)
+
+    impl_notes = [
+        ("Node count",
+         "Finding the right number of nodes took some trial and error. Too many "
+         "made the chart unreadable, too few lost geographic detail. Grouping by "
+         "continent gave a clean layout while keeping the flows meaningful."),
+        ("Self-connecting arcs",
+         "Crashes where origin and destination fall in the same region produced "
+         "self-connecting arcs that cluttered the center of the diagram. We "
+         "removed them since intra-region flows are less interesting to show."),
+        ("Data pipeline",
+         "Python script cross-references crash records with OpenFlights to assign "
+         "each crash to an origin and destination region, then builds the flow "
+         "matrix fed into the D3 chord layout."),
+        ("Arc direction",
+         "The thicker end of each arc marks the origin region, the thinner end "
+         "the destination. Region label colors carry over to the arcs so flows "
+         "are easy to trace across the diagram."),
+        ("GitHub Pages",
+         "The SVG rendering of the chord diagram looked fine locally but some "
+         "arc gradients were dropped on GitHub Pages. Switching from CSS gradients "
+         "to plain SVG fill colors kept the chart consistent across environments."),
+    ]
+    ny = H - 318
+    for title, text in impl_notes:
+        c.setFillColor(HexColor("#f0f9ff"))
+        c.rect(35, ny - 28, W - 70, 30, fill=1, stroke=0)
+        c.setStrokeColor(ACCENT2)
+        c.setLineWidth(0.4)
+        c.line(35, ny + 2, 35, ny - 26)
+        c.setFont("Helvetica-Bold", 7.5)
+        c.setFillColor(ACCENT2)
+        c.drawString(42, ny - 2, title)
+        body_text(c, 42, ny - 14, text, size=7, color=GREY,
+                  max_width=W - 80, line_height=10)
+        ny -= 36
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PAGE 9 – PEER ASSESSMENT & CONTRIBUTIONS
+# ═══════════════════════════════════════════════════════════════════════════
+def page_contributions(c):
+    fill_bg(c)
+    footer_rule(c)
+    page_number(c, 9)
+
+    badge(c, 35, H - 38, "/ 08  TEAM & PEER ASSESSMENT", color=ACCENT)
     heading(c, 35, H - 68, "Who built what", size=22)
     divider(c, 35, H - 76, W - 70)
 
@@ -879,6 +944,10 @@ def page_contributions(c):
                  "D3 force-simulation bubble chart with year slider and glow-on-hover. "
                  "The navbar backdrop-blur worked on the dev server but broke on "
                  "GitHub Pages, so we used a solid background for the deployed version."),
+                ("Process Book",
+                 "Wrote and generated the Process Book PDF for Milestone 3 using "
+                 "ReportLab, documenting all six visualizations, design decisions, "
+                 "challenges, and team contributions."),
             ]
         },
         {
@@ -913,6 +982,9 @@ def page_contributions(c):
                  "chart readable without losing too much detail. Removed self-connecting "
                  "arcs as they looked cluttered. Arc width is proportional to "
                  "crash-flow volume between regions."),
+                ("Screencast",
+                 "Recorded and edited the screencast for Milestone 3, demonstrating "
+                 "all six visualizations and the interactive features of the website."),
             ]
         },
     ]
@@ -996,6 +1068,7 @@ def main():
         page_viz12,
         page_viz34,
         page_viz5,
+        page_viz6,
         page_contributions,
     ]
     for fn in pages:
